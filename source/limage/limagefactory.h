@@ -4,6 +4,7 @@
 #include "source/limage/limageqimage.h"
 #include "source/limage/multicolorimage.h"
 #include "source/limage/standardcolorimage.h"
+#include "source/limage/limagetiff.h"
 
 class LImageFactory {
 public:
@@ -15,6 +16,8 @@ public:
             return new MultiColorImage(colorType);
         if (t == LImage::Type::HiresBitmap)
             return new StandardColorImage(colorType);
+        if (t == LImage::Type::Tiff)
+            return new LImageTiff(colorType);
 
         qDebug() << "ERROR: LImageFactory could not find type " << t;
         return nullptr;

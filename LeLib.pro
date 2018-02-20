@@ -10,7 +10,7 @@ TARGET = LeLib
 TEMPLATE = lib
 CONFIG += staticlib
 
-
+QMAKE_CXXFLAGS += -openmp
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -37,7 +37,8 @@ SOURCES += \
     source/limage/limageqimage.cpp \
     source/limage/multicolorimage.cpp \
     source/limage/standardcolorimage.cpp \
-    source/data.cpp
+    source/data.cpp \
+    source/limage/limagetiff.cpp
 
 HEADERS += \
         lelib.h \
@@ -52,20 +53,25 @@ HEADERS += \
     source/util/counter.h \
     source/limage/lcolorlist.h \
     source/limage/limage.h \
-    source/limage/limage.h.Z10876 \
     source/limage/limagefactory.h \
     source/limage/limageio.h \
     source/limage/limageqimage.h \
     source/limage/multicolorimage.h \
     source/limage/standardcolorimage.h \
-    source/data.h
+    source/data.h \
+    source/limage/limagetiff.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
 
+#CONFIG+=USE_LIBTIFF
+#DEFINES += USE_LIBTIFF
+
+USE_LIBTIFF {
 unix|win32: LIBS += -L$$PWD/lib/ -llibtiff
 
 INCLUDEPATH += $$PWD/lib/libtiff
 INCLUDEPATH += $$PWD/lib
 DEPENDPATH += $$PWD/lib/libtiff
+}

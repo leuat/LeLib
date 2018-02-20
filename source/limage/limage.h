@@ -15,7 +15,7 @@
 class LImage
 {
 public:
-    enum Type { QImageBitmap, MultiColorBitmap, HiresBitmap, NotSupported };
+    enum Type { QImageBitmap, MultiColorBitmap, HiresBitmap, NotSupported, Tiff };
 
     LImage() {}
     LImage(LColorList::Type t);

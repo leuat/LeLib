@@ -366,9 +366,9 @@ void MultiColorImage::ToQImage(LColorList& lst, QImage* img, float zoom, QPoint 
 
             unsigned int col = getPixel(xp,yp);
             QRgb rgbCol = (lst.m_list[col].color).rgb();
-            for (int k=0;k<m_scale;k++)
-                img->setPixel(m_scale*i + k,j,rgbCol);
-//            img->setPixel(2*i+1,j,lst.m_list[col].color.rgb());
+            //for (int k=0;k<m_scale;k++)
+ //               img->setPixel(m_scale*i + k,j,rgbCol);
+                img->setPixel(i,j,rgbCol);
         }
     //return img;
 }

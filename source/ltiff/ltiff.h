@@ -1,3 +1,5 @@
+#ifdef USE_LIBTIFF
+
 #ifndef LTIFF_H
 #define LTIFF_H
 
@@ -154,3 +156,4 @@ public:
 };
 
 #endif // LTIFF_H
+#endif

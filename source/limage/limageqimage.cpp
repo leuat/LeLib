@@ -29,7 +29,9 @@ void LImageQImage::LoadQImage(QString filename)
 {
     Release();
     m_qImage = new QImage();
-    m_qImage->load(filename);
+
+    if (!m_qImage->load(filename))
+        qDebug() << "Could not find file " << filename;
 }
 
 void LImageQImage::SaveBin(QFile& file)
@@ -154,7 +156,6 @@ void LImageQImage::Release()
 QImage* LImageQImage::Resize(int x, int y, LColorList& lst, float gamma, float shift, float hsvShift, float sat)
 {
 
-    qDebug() << x;
     QImage* other = new QImage(x,y,QImage::Format_ARGB32);
     float aspect = m_qImage->width()/(float)m_qImage->height();
     float m = max(m_qImage->width(), m_qImage->height());
@@ -181,6 +182,7 @@ QImage* LImageQImage::Resize(int x, int y, LColorList& lst, float gamma, float s
     }
     aspectY = 1/aspect;
     QColor black(0,0,0);
+#pragma omp parallel for
     for (int i=0;i<x;i++)
         for (int j=0;j<y;j++) {
             QColor color = black;
@@ -237,7 +239,6 @@ QImage *LImageQImage::Blur(float blurRadius)
 void LImageQImage::ToQImage(LColorList& lst, QImage* img, float zoom, QPoint center)
 {
 #pragma omp parallel for
-
     for (int i=0;i<m_width;i++)
         for (int j=0;j<m_height;j++) {
 
@@ -254,6 +255,7 @@ void LImageQImage::ToQImage(LColorList& lst, QImage* img, float zoom, QPoint cen
 
 void LImageQImage::fromQImage(QImage *img, LColorList &lst)
 {
+#pragma omp parallel for
     for (int i=0;i<m_qImage->width();i++)
         for (int j=0;j<m_qImage->height();j++) {
             unsigned char col = lst.getIndex(QColor(img->pixel(i, j)));

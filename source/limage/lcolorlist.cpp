@@ -68,6 +68,9 @@ void LColorList::Initialize(Type t)
         InitCGA2_HIGH();
     if (m_type == Type::CGA2_LOW)
         InitCGA2_LOW();
+    if (m_type == Type::TIFF)
+        InitC64();
+
 
 
     m_metric = new LinearMetric();

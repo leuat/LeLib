@@ -1,3 +1,4 @@
+#ifdef USE_LIBTIFF
 #include "ltiff.h"
 #include <QDebug>
 #include <omp.h>
@@ -463,3 +464,4 @@ void LTiff::Close()
         TIFFClose(m_tif);
     m_tif = nullptr;
 }
+#endif
