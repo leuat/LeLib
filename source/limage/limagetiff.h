@@ -11,7 +11,7 @@ public:
     LImageTiff(LColorList::Type t);
 
 #ifdef USE_LIBTIFF
-    LTiff m_tif;
+    QVector<LTiff*> m_tifs;
 #endif
     void Initialize(int width, int height) override;
 
@@ -20,7 +20,7 @@ public:
 
     void LoadTiff(QString filename);
 
-    void ToQImage(LColorList& lst, QImage* img, float zoom, QPoint center) override;
+    void ToQImage(LColorList& lst, QImage* img, float zoom, QPointF center) override;
 
 
 };

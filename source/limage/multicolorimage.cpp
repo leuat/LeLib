@@ -354,7 +354,7 @@ int PixelChar::Count(unsigned int col, unsigned char bitMask, unsigned char scal
     return cnt;
 }
 
-void MultiColorImage::ToQImage(LColorList& lst, QImage* img, float zoom, QPoint center)
+void MultiColorImage::ToQImage(LColorList& lst, QImage* img, float zoom, QPointF center)
 {
 //    return;
 #pragma omp parallel for

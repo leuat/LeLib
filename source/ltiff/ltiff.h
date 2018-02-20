@@ -47,6 +47,9 @@ public:
         Release();
     }
 
+
+
+
     void Release() {
 
         for (int i=0;i<buffers.count();i++ ) {
@@ -54,6 +57,15 @@ public:
             delete buffers[i];
         }
         buffers.clear();
+
+    }
+
+    void SetDefault() {
+        for (int i=0;i<buffers.count();i++) {
+            buffers[i]->m_x=-1;
+            buffers[i]->m_y=-1;
+
+        }
 
     }
 
@@ -88,7 +100,9 @@ public:
     }
 
     LTiffBuffer* getBuffer(int x, int y, TIFF* tif) {
-        for (LTiffBuffer* tbuf : stack) {
+        //for (LTiffBuffer* tbuf : stack) {
+        for (int i=stack.count()-1;i>=0;i--) {
+            LTiffBuffer* tbuf = stack[i];
             if (tbuf->m_x == x && tbuf->m_y==y)
                 return tbuf;
         }
@@ -131,6 +145,9 @@ public:
     static const int max_thread_num = 16;
 
     LTiffBufferList bufferStack;
+
+
+    void UpdateBuffers();
 
     QVector3D m_boundsMin, m_boundsMax;
 

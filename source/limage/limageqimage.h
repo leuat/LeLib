@@ -1,5 +1,6 @@
 #ifndef LIMAGEQIMAGE_H
 #define LIMAGEQIMAGE_H
+#include "source/limage/lcolorlist.h"
 #include "source/limage/limage.h"
 #include <QImage>
 
@@ -21,7 +22,7 @@ public:
 
     void LoadQImage(QString filename);
 
-    virtual void ToQImage(LColorList& lst, QImage* img, float zoom, QPoint center) override;
+    virtual void ToQImage(LColorList& lst, QImage* img, float zoom, QPointF center) override;
     void fromQImage(QImage* img, LColorList& lst) override;
 
 

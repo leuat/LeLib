@@ -55,7 +55,7 @@ public:
     void setForeground(unsigned int col) override;
     void setBackground(unsigned int col) override;
 
-    void ToQImage(LColorList& lst, QImage* img, float zoom, QPoint center) override;
+    void ToQImage(LColorList& lst, QImage* img, float zoom, QPointF center) override;
 
     void Release() override {}
 

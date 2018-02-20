@@ -4,6 +4,7 @@
 #include <omp.h>
 #include "source/util/lmessage.h"
 
+
 LTiff::LTiff()
 {
 
@@ -28,6 +29,7 @@ bool LTiff::Open(QString filename)
     m_filename = filename;
     m_tif = TIFFOpen(filename.toStdString().c_str(), "r");
     if (!m_tif) {
+        qDebug() << "CANNOT OPEN TIFF FILE";
         return false;
     }
     TIFFGetField(m_tif, TIFFTAG_IMAGEWIDTH, &m_width);
@@ -344,10 +346,12 @@ QColor LTiff::GetTiledRGB(int x, int y, int thread_num) {
 
 }
 
+
+
 void LTiff::SetupBuffers()
 {
     AllocateBuffers();
-    bufferStack.Init(60, TIFFTileSize(m_tif));
+    bufferStack.Init(400, TIFFTileSize(m_tif));
 
 }
 

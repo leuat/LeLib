@@ -236,7 +236,7 @@ QImage *LImageQImage::Blur(float blurRadius)
 
 }
 
-void LImageQImage::ToQImage(LColorList& lst, QImage* img, float zoom, QPoint center)
+void LImageQImage::ToQImage(LColorList& lst, QImage* img, float zoom, QPointF center)
 {
 #pragma omp parallel for
     for (int i=0;i<m_width;i++)
