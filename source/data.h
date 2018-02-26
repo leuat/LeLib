@@ -10,6 +10,7 @@ public:
     bool redrawOutput=false;
     bool redrawInput=false;
     bool redrawFileList = false;
+    bool abort = false;
     float percent = 0;
     unsigned char currentColor = 0;
     static Data data;

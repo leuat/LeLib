@@ -14,6 +14,13 @@ LImageTiff::LImageTiff(LColorList::Type t) : LImageQImage(t)
     m_type = LImage::Tiff;
 }
 
+LImageTiff::~LImageTiff()
+{
+    for (LTiff* t : m_tifs)
+        delete t;
+    m_tifs.clear();
+}
+
 void LImageTiff::Initialize(int width, int height)
 {
     Release();
@@ -55,7 +62,7 @@ void LImageTiff::ToQImage(LColorList &lst, QImage *img, float zoom, QPointF cent
     float addPercent = 1.0/(m_width*m_height);
     Data::data.percent = 0;
 #pragma omp parallel for
-    for (int i=0;i<m_width;i++)
+    for (int i=0;i<m_width;i++) {
         for (int j=0;j<m_height;j++) {
 
             int thread = omp_get_thread_num();
@@ -80,9 +87,17 @@ void LImageTiff::ToQImage(LColorList &lst, QImage *img, float zoom, QPointF cent
             Data::data.percent  += addPercent;
             if (j%40 == 0)
                 m_tif->bufferStack.UpdateBuffer();
+
+            if (Data::data.abort)
+                break;
+
                 //m_tif.m_bufferStacks[thread]->UpdateBuffer();
 
         }
+        if (Data::data.abort)
+            break;
+
+    }
     Data::data.percent = 1;
 #endif
 

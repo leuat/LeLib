@@ -10,6 +10,7 @@
 #include <tiffio.h>
 #include <QColor>
 #include "source/util/counter.h"
+#include <source/util/lgraph.h>
 
 /*
 output.SetField(TiffTag.IMAGEWIDTH, width);
@@ -153,6 +154,9 @@ public:
 
     LTiff();
     ~LTiff();
+
+    void GetMinMax(int count, QColor& min, QColor & max, LGraph& histogram);
+    void Analyzer();
     bool Open(QString filename);
     void New(QString filename);
     void WriteBuffer(int x, int y, int thread_num);
@@ -162,6 +166,7 @@ public:
     void CopyAllData(LTiff& oTiff);
     void AllocateBuffers();
     void Transform(LTiff &oTiff, float angle, float scale, int tx, int ty, QColor background, Counter* counter);
+    void AutoContrast(LTiff &oTiff,  Counter* counter);
     QColor GetTiledRGB(int x, int y, int thread_num);
     void SetupBuffers();
     void PrintImageInfo();

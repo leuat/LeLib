@@ -93,6 +93,20 @@ float Util::clamp(float val, const float mi, const float ma) {
     return val;
 }
 
+QColor Util::Gamma(QColor c, float xexp, float shift)
+{
+    float x = c.red();
+    float y = c.green();
+    float z = c.blue();
+    x = pow(x - shift, xexp);
+    y = pow(y - shift, xexp);
+    z = pow(z - shift, xexp);
+    x = clamp(x,0,255);
+    y = clamp(y,0,255);
+    z = clamp(z,0,255);
+    return QColor(x,y,z);
+}
+
 QVector3D Util::clamp(const QVector3D val, const float min, const float max)
 {
     QVector3D v = val;

@@ -169,6 +169,12 @@ public:
     static float clamp(float val, const float min, const float max);
     static QVector3D clamp(QVector3D val, float min, float max);
 
+
+    static QColor Gamma(QColor c, float exp, float shift);
+    static float ColorLength(QColor& c) {
+        return sqrt(c.red()*c.red() + c.green()*c.green() + c.blue()*c.blue());
+    }
+
     static void drawBox(QImage* backImage, QImage* img, int i, int j, int size, QRgb color) {
         int imageSize = img->width();
         QRgb mark = QColor(1,1,1).rgba();

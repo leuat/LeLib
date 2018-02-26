@@ -9,7 +9,7 @@ class LImageTiff : public LImageQImage {
 public:
     LImageTiff();
     LImageTiff(LColorList::Type t);
-
+    ~LImageTiff();
 #ifdef USE_LIBTIFF
     QVector<LTiff*> m_tifs;
 #endif

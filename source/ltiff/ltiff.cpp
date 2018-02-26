@@ -4,7 +4,6 @@
 #include <omp.h>
 #include "source/util/lmessage.h"
 
-
 LTiff::LTiff()
 {
 
@@ -16,6 +15,53 @@ LTiff::LTiff()
 LTiff::~LTiff()
 {
     Close();
+}
+
+void LTiff::GetMinMax(int count, QColor &minCol, QColor &maxCol, LGraph& hist)
+{
+    //*counter = Counter((int)(length*width),"GetMinMax ", false);
+    AllocateBuffers();
+    minCol = QColor(255,255,255);
+    maxCol = QColor(0,0,0);
+    float minVal = 1E30;
+    float maxVal = 0;
+
+    hist.Initialize(50,0,255);
+
+    for (int i=0;i<count;i++){
+        float xx = rand()%m_width;
+        float yy = rand()%m_height;
+
+        QColor color =  GetTiledRGB(xx,yy,omp_get_thread_num());
+        float len = Util::ColorLength(color);
+        if (len<minVal) {
+            minVal = len;
+            minCol = color;
+        }
+        if (len>minVal) {
+            maxVal = len;
+            maxCol = color;
+        }
+        //hist.Add(len);
+        if (i%10==0) bufferStack.UpdateBuffer();
+        if (Util::CancelSignal) {
+            return;
+        }
+
+
+    }
+
+
+    //counter->Tick();
+
+
+
+}
+
+
+void LTiff::Analyzer()
+{
+
 }
 
 bool LTiff::Open(QString filename)
@@ -239,40 +285,41 @@ void LTiff::CreateFromMeta(LTiff &oTiff, short compression, float rotationAngle,
 
     //m_boundsMax = oTiff.m_boundsMax;
     //m_boundsMin = oTiff.m_boundsMin;
+    if (rotationAngle!=0) {
+
+        QVector3D c1 = QVector3D(m_boundsMin.x(),m_boundsMin.y(),0);
+        QVector3D c2 = QVector3D(m_boundsMin.x(),m_boundsMax.y(),0);
+        QVector3D c3 = QVector3D(m_boundsMax.x(),m_boundsMax.y(),0);
+        QVector3D c4 = QVector3D(m_boundsMax.x(),m_boundsMin.y(),0);
+
+        QVector3D center = c3/2;
+
+        c1 = Util::Rotate2D(c1, center, rotationAngle);
+        c2 = Util::Rotate2D(c2, center, rotationAngle);
+        c3 = Util::Rotate2D(c3, center, rotationAngle);
+        c4 = Util::Rotate2D(c4, center, rotationAngle);
+
+        QVector3D newMin, newMax;
+        m_boundsMax.setX(max(c1.x(), c2.x()));
+        m_boundsMax.setX(max(m_boundsMax.x(), c3.x()));
+        m_boundsMax.setX(max(m_boundsMax.x(), c4.x()));
+        m_boundsMax.setY(max(c1.y(), c2.y()));
+        m_boundsMax.setY(max(m_boundsMax.y(), c3.y()));
+        m_boundsMax.setY(max(m_boundsMax.y(), c4.y()));
+
+        m_boundsMin.setX(min(c1.x(), c2.x()));
+        m_boundsMin.setX(min(m_boundsMin.x(), c3.x()));
+        m_boundsMin.setX(min(m_boundsMin.x(), c4.x()));
+        m_boundsMin.setY(min(c1.y(), c2.y()));
+        m_boundsMin.setY(min(m_boundsMin.y(), c3.y()));
+        m_boundsMin.setY(min(m_boundsMin.y(), c4.y()));
 
 
-    QVector3D c1 = QVector3D(m_boundsMin.x(),m_boundsMin.y(),0);
-    QVector3D c2 = QVector3D(m_boundsMin.x(),m_boundsMax.y(),0);
-    QVector3D c3 = QVector3D(m_boundsMax.x(),m_boundsMax.y(),0);
-    QVector3D c4 = QVector3D(m_boundsMax.x(),m_boundsMin.y(),0);
 
-    QVector3D center = c3/2;
+        m_width = m_boundsMax.x() - m_boundsMin.x();
+        m_height = m_boundsMax.y() - m_boundsMin.y();
 
-    c1 = Util::Rotate2D(c1, center, rotationAngle);
-    c2 = Util::Rotate2D(c2, center, rotationAngle);
-    c3 = Util::Rotate2D(c3, center, rotationAngle);
-    c4 = Util::Rotate2D(c4, center, rotationAngle);
-
-    QVector3D newMin, newMax;
-    m_boundsMax.setX(max(c1.x(), c2.x()));
-    m_boundsMax.setX(max(m_boundsMax.x(), c3.x()));
-    m_boundsMax.setX(max(m_boundsMax.x(), c4.x()));
-    m_boundsMax.setY(max(c1.y(), c2.y()));
-    m_boundsMax.setY(max(m_boundsMax.y(), c3.y()));
-    m_boundsMax.setY(max(m_boundsMax.y(), c4.y()));
-
-    m_boundsMin.setX(min(c1.x(), c2.x()));
-    m_boundsMin.setX(min(m_boundsMin.x(), c3.x()));
-    m_boundsMin.setX(min(m_boundsMin.x(), c4.x()));
-    m_boundsMin.setY(min(c1.y(), c2.y()));
-    m_boundsMin.setY(min(m_boundsMin.y(), c3.y()));
-    m_boundsMin.setY(min(m_boundsMin.y(), c4.y()));
-
-
-
-    m_width = m_boundsMax.x() - m_boundsMin.x();
-    m_height = m_boundsMax.y() - m_boundsMin.y();
-
+    }
 //    qDebug() << "New size: " << m_width << ", " << m_height;
 
 //    exit(1);
@@ -436,8 +483,50 @@ void LTiff::Transform(LTiff &oTiff, float angle, float scale, int tx, int ty, QC
 
     }
 
-//    cout << "\nDone!" << endl;
+    //    cout << "\nDone!" << endl;
 }
+
+void LTiff::AutoContrast(LTiff &oTiff, Counter *counter)
+{
+    float length = m_height/(float)m_tileHeight;
+    float width = m_width/(float)m_tileWidth;
+
+    *counter = Counter((int)(length*width),"AutoContrast ", false);
+    AllocateBuffers();
+    for (uint y = 0; y < m_height; y += m_tileHeight) {
+        for (uint x = 0; x < m_width; x += m_tileWidth) {
+
+            for (uint i = 0;i<m_tileWidth;i++)
+                for (uint j=0;j<m_tileHeight;j++) {
+
+                    float xx = x+i;
+                    float yy = y+j;
+
+                    QColor color =  oTiff.GetTiledRGB(xx,yy,omp_get_thread_num());
+                    color = Util::Gamma(color, 0.5, 0.0);
+                    ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 2] = color.red();
+                    ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 1] = color.green();
+                    ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 0] = color.blue();
+            }
+
+
+            WriteBuffer(x,y,0);
+            counter->Tick();
+            //m_progress = counter->percent;
+            oTiff.bufferStack.UpdateBuffer();
+
+
+            if (Util::CancelSignal) {
+                return;
+            }
+
+        }
+
+    }
+
+    //    cout << "\nDone!" << endl;
+}
+
 
 
 void LTiff::AllocateBuffers()

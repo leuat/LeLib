@@ -48,7 +48,9 @@ SOURCES += \
     source/limage/multicolorimage.cpp \
     source/limage/standardcolorimage.cpp \
     source/data.cpp \
-    source/limage/limagetiff.cpp
+    source/limage/limagetiff.cpp \
+    source/util/lgraph.cpp \
+    source/util/spline.cpp
 
 HEADERS += \
         lelib.h \
@@ -69,14 +71,16 @@ HEADERS += \
     source/limage/multicolorimage.h \
     source/limage/standardcolorimage.h \
     source/data.h \
-    source/limage/limagetiff.h
+    source/limage/limagetiff.h \
+    source/util/lgraph.h \
+    source/util/spline.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
 
-#CONFIG+=USE_LIBTIFF
-#DEFINES += USE_LIBTIFF
+CONFIG+=USE_LIBTIFF
+DEFINES += USE_LIBTIFF
 
 USE_LIBTIFF {
 unix|win32: LIBS += -L$$PWD/lib/ -llibtiff
