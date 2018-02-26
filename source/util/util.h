@@ -62,6 +62,8 @@ public:
     static string trim(string s);
     static QString path;
 
+    static QColor colorScale(QColor& col, int mean, int std);
+
     static QString fixFolder(QString folderName) {
         if (folderName[folderName.count()-1]=='\\')
                 return folderName;

@@ -3,6 +3,8 @@
 #include <string>
 #include <iostream>
 #include <qdebug.h>
+#include <QFile>
+#include <QTextStream>
 
 void LGraph::normalizeArea()
 {
@@ -18,6 +20,25 @@ void LGraph::normalizeArea()
     integralSum *= 0.5;
     for(int i=0; i<m_value.size(); i++) {
         m_value[i] /= integralSum;
+    }
+
+}
+
+void LGraph::getMinMaxY()
+{
+    m_miny = 1E30;
+    m_maxy = -1E30;
+    for (int i=0;i<m_noBins;i++) {
+        m_miny = min(m_value[i], m_miny);
+        m_maxy = max(m_value[i], m_maxy);
+    }
+}
+
+void LGraph::Normalize()
+{
+    getMinMaxY();
+    for (int i=0;i<m_noBins;i++) {
+        m_value[i] = (m_value[i] - m_miny)/(m_maxy - m_miny);
     }
 
 }
@@ -57,6 +78,14 @@ void LGraph::Mean() {
         m_mean+=m_value[i];
     }
     m_mean/=(double)m_noBins;
+    m_meanY = 0;
+    float current = -1;
+    for (int i=0;i<m_noBins;i++) {
+        if (m_value[i]>current) {
+            current = m_value[i];
+            m_meanY = m_index[i];
+        }
+    }
 
 }
 
@@ -87,13 +116,26 @@ void LGraph::Std() {
 
 */
 
-void LGraph::LoadText(string Filename) {
+void LGraph::LoadText(QString Filename) {
 
 }
 
 
 
-void LGraph::SaveText(string Filename) {
+void LGraph::SaveText(QString fileName) {
+    if (QFile::exists(fileName))
+      QFile::remove(fileName);
+        QFile file(fileName);
+    qDebug() << "Saving graph " << fileName;
+    if (file.open(QIODevice::ReadWrite|QFile::Text)) {
+            QTextStream stream(&file);
+
+            for (int i=0;i<m_noBins;i++) {
+                stream << m_index[i] << "  " << m_value[i] << endl;
+//                qDebug() << m_index[i] << " " << m_value[i];
+            }
+        }
+    file.close();
 }
 
 

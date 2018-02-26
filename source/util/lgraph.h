@@ -20,6 +20,9 @@ public:
     float m_delta;
     double m_mean, m_std;
 
+
+    float m_meanY, m_stdY;
+
     QString m_name;
 
     int m_noBins;
@@ -29,8 +32,10 @@ public:
 
     void normalizeArea();
 
+    void getMinMaxY();
 
-    uint getIndex(float xval) {
+
+    int getIndex(float xval) {
         float s = (xval - m_minx)/(m_maxx - m_minx);
         s*=m_noBins;
         if (s>=0 && s<m_noBins)
@@ -61,8 +66,10 @@ public:
         m_maxx = xmax;
         m_delta = (xmax - xmin)/bins;
         m_value.resize(bins);
+        m_index.resize(bins);
         for (int i=0;i<bins;i++) {
             m_value[i] = 0;
+            m_index[i] = xmin + m_delta*i;
         }
 
     }
@@ -72,8 +79,8 @@ public:
     void Normalize();
 
 
-    void LoadText(string Filename);
-    void SaveText(string Filename);
+    void LoadText(QString Filename);
+    void SaveText(QString Filename);
 
     void Mean();
     void Std();

@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <omp.h>
 #include "source/util/lmessage.h"
+#include "source/util/random.h"
 
 LTiff::LTiff()
 {
@@ -26,13 +27,14 @@ void LTiff::GetMinMax(int count, QColor &minCol, QColor &maxCol, LGraph& hist)
     float minVal = 1E30;
     float maxVal = 0;
 
-    hist.Initialize(50,0,255);
+    hist.Initialize(50,0,400);
 
     for (int i=0;i<count;i++){
         float xx = rand()%m_width;
         float yy = rand()%m_height;
 
         QColor color =  GetTiledRGB(xx,yy,omp_get_thread_num());
+        hist.add(Util::ColorLength(color),1);
         float len = Util::ColorLength(color);
         if (len<minVal) {
             minVal = len;
@@ -51,12 +53,65 @@ void LTiff::GetMinMax(int count, QColor &minCol, QColor &maxCol, LGraph& hist)
 
     }
 
-
-    //counter->Tick();
-
-
-
 }
+
+void LTiff::AutoContrast(LTiff &oTiff, Counter *counter, float std)
+{
+    float length = m_height/(float)m_tileHeight;
+    float width = m_width/(float)m_tileWidth;
+
+    *counter = Counter((int)(length*width),"AutoContrast ", false);
+    AllocateBuffers();
+    LGraph hist;
+    QColor min_c, max_c;
+    oTiff.GetMinMax(50000,min_c, max_c, hist);
+    hist.Normalize();
+
+    hist.SaveText("histogram.plt");
+    hist.Mean();
+    hist.Std();
+    qDebug() << "meanY :" << hist.m_meanY;
+    qDebug() << "std :" << std;
+
+    float mean = hist.m_meanY;
+//    float std = 4;
+
+    for (uint y = 0; y < m_height; y += m_tileHeight) {
+        for (uint x = 0; x < m_width; x += m_tileWidth) {
+
+            for (uint i = 0;i<m_tileWidth;i++)
+                for (uint j=0;j<m_tileHeight;j++) {
+
+                    float xx = x+i;
+                    float yy = y+j;
+
+                    QColor color =  oTiff.GetTiledRGB(xx,yy,omp_get_thread_num());
+                    //float f = Util::ColorLength(color);
+                    //color = Util::Gamma(color, 0.5, 0.0);
+                    color = Util::colorScale(color, mean, std);
+                    ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 2] = color.red();
+                    ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 1] = color.green();
+                    ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 0] = color.blue();
+            }
+
+
+            WriteBuffer(x,y,0);
+            counter->Tick();
+            //m_progress = counter->percent;
+            oTiff.bufferStack.UpdateBuffer();
+
+
+            if (Util::CancelSignal) {
+                return;
+            }
+
+        }
+
+    }
+
+    //    cout << "\nDone!" << endl;
+}
+
 
 
 void LTiff::Analyzer()
@@ -486,46 +541,6 @@ void LTiff::Transform(LTiff &oTiff, float angle, float scale, int tx, int ty, QC
     //    cout << "\nDone!" << endl;
 }
 
-void LTiff::AutoContrast(LTiff &oTiff, Counter *counter)
-{
-    float length = m_height/(float)m_tileHeight;
-    float width = m_width/(float)m_tileWidth;
-
-    *counter = Counter((int)(length*width),"AutoContrast ", false);
-    AllocateBuffers();
-    for (uint y = 0; y < m_height; y += m_tileHeight) {
-        for (uint x = 0; x < m_width; x += m_tileWidth) {
-
-            for (uint i = 0;i<m_tileWidth;i++)
-                for (uint j=0;j<m_tileHeight;j++) {
-
-                    float xx = x+i;
-                    float yy = y+j;
-
-                    QColor color =  oTiff.GetTiledRGB(xx,yy,omp_get_thread_num());
-                    color = Util::Gamma(color, 0.5, 0.0);
-                    ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 2] = color.red();
-                    ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 1] = color.green();
-                    ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 0] = color.blue();
-            }
-
-
-            WriteBuffer(x,y,0);
-            counter->Tick();
-            //m_progress = counter->percent;
-            oTiff.bufferStack.UpdateBuffer();
-
-
-            if (Util::CancelSignal) {
-                return;
-            }
-
-        }
-
-    }
-
-    //    cout << "\nDone!" << endl;
-}
 
 
 

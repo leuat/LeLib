@@ -75,6 +75,18 @@ string Util::trim(string strin)
   return str;
 }
 
+QColor Util::colorScale(QColor &col, int mean, int std)
+{
+    float f = 1.0/(2*std)*255;
+    QVector3D c;
+    c.setX((col.red()-mean)*f + mean);
+    c.setY((col.green()-mean)*f + mean);
+    c.setZ((col.blue()-mean)*f + mean);
+    c = clamp(c,0,255);
+    return QColor(c.x(), c.y(), c.z());
+
+}
+
 QString Util::findFileInDirectory(QString search, QString dir, QString extension)
 {
     QDirIterator it(dir, QStringList() << "*." + extension, QDir::Files);
