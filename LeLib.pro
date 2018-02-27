@@ -50,7 +50,8 @@ SOURCES += \
     source/data.cpp \
     source/limage/limagetiff.cpp \
     source/util/lgraph.cpp \
-    source/util/spline.cpp
+    source/util/spline.cpp \
+    source/util/cinifile.cpp
 
 HEADERS += \
         lelib.h \
@@ -73,7 +74,8 @@ HEADERS += \
     source/data.h \
     source/limage/limagetiff.h \
     source/util/lgraph.h \
-    source/util/spline.h
+    source/util/spline.h \
+    source/util/cinifile.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
