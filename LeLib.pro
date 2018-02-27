@@ -79,8 +79,8 @@ unix {
     INSTALLS += target
 }
 
-CONFIG+=USE_LIBTIFF
-DEFINES += USE_LIBTIFF
+#CONFIG+=USE_LIBTIFF
+#DEFINES += USE_LIBTIFF
 
 USE_LIBTIFF {
 unix|win32: LIBS += -L$$PWD/lib/ -llibtiff

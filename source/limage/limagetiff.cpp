@@ -16,9 +16,11 @@ LImageTiff::LImageTiff(LColorList::Type t) : LImageQImage(t)
 
 LImageTiff::~LImageTiff()
 {
+#ifdef USE_LIB_TIFF
     for (LTiff* t : m_tifs)
         delete t;
     m_tifs.clear();
+#endif
 }
 
 void LImageTiff::Initialize(int width, int height)

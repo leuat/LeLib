@@ -9,6 +9,7 @@ public:
     float version = 0.01;
     bool redrawOutput=false;
     bool redrawInput=false;
+    bool forceRedraw = false;
     bool redrawFileList = false;
     bool abort = false;
     float percent = 0;

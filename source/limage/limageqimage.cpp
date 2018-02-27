@@ -153,7 +153,7 @@ void LImageQImage::Release()
 
 
 
-QImage* LImageQImage::Resize(int x, int y, LColorList& lst, float gamma, float shift, float hsvShift, float sat)
+QImage* LImageQImage::Resize(int x, int y, LColorList& lst, float gamma, float shift, float hsvShift, float sat, QPointF scale)
 {
 
     QImage* other = new QImage(x,y,QImage::Format_ARGB32);
