@@ -162,7 +162,7 @@ public:
     void WriteBuffer(int x, int y, int thread_num);
     void ReadBuffer(int x, int y, int thread_num);
     void ApplyParameters();
-    void CreateFromMeta(LTiff& oTiff, short compression, float rotationAngle, QColor background);
+    void CreateFromMeta(LTiff& oTiff, short compression, float rotationAngle, QColor background, bool calculateBounds);
     void CopyAllData(LTiff& oTiff);
     void AllocateBuffers();
     void Transform(LTiff &oTiff, float angle, float scale, int tx, int ty, QColor background, Counter* counter);

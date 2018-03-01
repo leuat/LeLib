@@ -235,7 +235,7 @@ QString LTiff::ClipToCurrentBorders(short compression, QColor background, Counte
     otif.New(filename);
     otif.m_boundsMax = m_boundsMax;
     otif.m_boundsMin = m_boundsMin;
-    otif.CreateFromMeta(*this, compression, 0, background);
+    otif.CreateFromMeta(*this, compression, 0, background, false);
 
 /*    qDebug() << "new bounds (in): " << m_boundsMin << ", " << m_boundsMax;
     qDebug() << "new bounds (out): " << otif.m_boundsMin << ", " << otif.m_boundsMax;
@@ -318,7 +318,7 @@ void LTiff::ApplyParameters()
 
 
 
-void LTiff::CreateFromMeta(LTiff &oTiff, short compression, float rotationAngle, QColor background)
+void LTiff::CreateFromMeta(LTiff &oTiff, short compression, float rotationAngle, QColor background, bool calculateBounds)
 {
     m_width = oTiff.m_width;
     m_height = oTiff.m_height;
@@ -340,7 +340,7 @@ void LTiff::CreateFromMeta(LTiff &oTiff, short compression, float rotationAngle,
 
     //m_boundsMax = oTiff.m_boundsMax;
     //m_boundsMin = oTiff.m_boundsMin;
-    if (rotationAngle!=0) {
+    if (!calculateBounds) {
 
         QVector3D c1 = QVector3D(m_boundsMin.x(),m_boundsMin.y(),0);
         QVector3D c2 = QVector3D(m_boundsMin.x(),m_boundsMax.y(),0);
@@ -374,6 +374,15 @@ void LTiff::CreateFromMeta(LTiff &oTiff, short compression, float rotationAngle,
         m_width = m_boundsMax.x() - m_boundsMin.x();
         m_height = m_boundsMax.y() - m_boundsMin.y();
 
+    }
+    else {
+       // m_boundsMax = oTiff.m_boundsMax;
+       // m_boundsMin = oTiff.m_boundsMin;
+
+        /*m_boundsMin.setX(0);
+        m_boundsMin.setY(0);
+        m_boundsMax.setX(m_width);
+        m_boundsMax.setY(m_height);*/
     }
 //    qDebug() << "New size: " << m_width << ", " << m_height;
 
