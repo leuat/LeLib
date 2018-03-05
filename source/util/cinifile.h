@@ -21,14 +21,29 @@ public:
     QVector<CItem> items;
 
     void Load(QString fname);
+    void Save(QString fname);
 
     QString getString(QString name) {
         for (int i=0;i<items.size();i++) {
             if (items[i].name==name.toLower().trimmed())
                 return items[i].strval;
         }
-        qDebug() << "CIniFile: Could not find parameter " + name;
         return "";
+    }
+
+    void setString(QString name, QString val) {
+        for (int i=0;i<items.size();i++) {
+            if (items[i].name==name.toLower().trimmed()) {
+                items[i].strval = val;
+                return;
+            }
+
+        }
+        CItem i;
+        i.name = name;
+        i.strval  = val;
+        items.append(i);
+
     }
 
 

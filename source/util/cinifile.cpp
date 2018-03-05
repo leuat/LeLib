@@ -10,7 +10,7 @@ void CIniFile::Load(QString fname) {
     qDebug() << fname << "exists";
 
     QFile file(fname);
-    file.open(QIODevice::ReadOnly);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream f(&file);
 
     while(!f.atEnd()) {
@@ -30,4 +30,25 @@ void CIniFile::Load(QString fname) {
         }
     }
     file.close();
+}
+
+void CIniFile::Save(QString fname)
+{
+    if (QFile::exists(fname)) {
+        QFile::remove(fname);
+    }
+
+    QFile file(fname);
+    file.open(QIODevice::WriteOnly| QIODevice::Text);
+    QTextStream f(&file);
+    for (CItem i: items) {
+        f << i.name << " = ";
+        if (i.strval!="")
+           f << i.strval << "\n";
+        else
+            f << QString::number(i.dval) << "\n";
+
+    }
+    file.close();
+
 }
