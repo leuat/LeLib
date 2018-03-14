@@ -22,6 +22,7 @@ unsigned char LImage::TypeToChar(LImage::Type t)
     if (t==HiresBitmap)
         return 2;
 
+
     return 255;
 }
 

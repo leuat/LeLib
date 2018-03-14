@@ -51,7 +51,9 @@ SOURCES += \
     source/limage/limagetiff.cpp \
     source/util/lgraph.cpp \
     source/util/spline.cpp \
-    source/util/cinifile.cpp
+    source/util/cinifile.cpp \
+    source/limage/charsetimage.cpp \
+    source/limage/c64fullscreenchar.cpp
 
 HEADERS += \
         lelib.h \
@@ -75,7 +77,9 @@ HEADERS += \
     source/limage/limagetiff.h \
     source/util/lgraph.h \
     source/util/spline.h \
-    source/util/cinifile.h
+    source/util/cinifile.h \
+    source/limage/charsetimage.h \
+    source/limage/c64fullscreenchar.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

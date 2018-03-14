@@ -5,6 +5,8 @@
 #include "source/limage/multicolorimage.h"
 #include "source/limage/standardcolorimage.h"
 #include "source/limage/limagetiff.h"
+#include "source/limage/charsetimage.h"
+#include "source/limage/c64fullscreenchar.h"
 
 class LImageFactory {
 public:
@@ -18,6 +20,10 @@ public:
             return new StandardColorImage(colorType);
         if (t == LImage::Type::Tiff)
             return new LImageTiff(colorType);
+        if (t == LImage::Type::CharMap)
+            return new CharsetImage(colorType);
+        if (t == LImage::Type::FullScreenChar)
+            return new C64FullScreenChar(colorType);
 
         qDebug() << "ERROR: LImageFactory could not find type " << t;
         return nullptr;

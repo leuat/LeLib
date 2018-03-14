@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QTextStream>
 #include "source/limage/standardcolorimage.h"
+#include "source/limage/charsetimage.h"
 #include <typeinfo>
 
 MultiColorImage::MultiColorImage(LColorList::Type t) : LImage(t)
@@ -96,10 +97,15 @@ void MultiColorImage::fromQImage(QImage *img, LColorList &lst)
 
 void MultiColorImage::CopyFrom(LImage* img)
 {
-    if ((typeid(*img) == typeid(MultiColorImage)) || (typeid(*img) == typeid(StandardColorImage))) {
+    MultiColorImage* mc = dynamic_cast<MultiColorImage*>(img);
+    //if ((typeid(*img) == typeid(MultiColorImage)) || (typeid(*img) == typeid(StandardColorImage))
+    //        || (typeid(*img) == typeid(CharsetImage)))
+    if (mc!=nullptr)
+    {
         MultiColorImage* mc = (MultiColorImage*)img;
          m_background = mc->m_background;
          m_border = mc->m_border;
+        // qDebug() << "COPY FROM";
 #pragma omp parallel for
          for(int i=0;i<25*40;i++) {
              for (int j=0;j<8;j++)
@@ -217,11 +223,187 @@ void MultiColorImage::ExportAsm(QString filename)
 
 }
 
+void MultiColorImage::ExportRasBin(QString filenameBase, QString name)
+{
+
+    QString fData = filenameBase + "_data.bin";
+    QString fColor = filenameBase + "_color.bin";
+
+    if (QFile::exists(fData))
+        QFile::remove(fData);
+
+    if (QFile::exists(fColor))
+        QFile::remove(fColor);
+
+    QByteArray data;
+    for (int i=0;i<40*25;i++) {
+        data.append(m_data[i].data());
+    }
+    QFile file(fData);
+    file.open(QIODevice::WriteOnly);
+    file.write( data );
+    file.close();
+
+    QByteArray colorData;
+    colorData.append(m_background);
+    colorData.append(m_border);
+    data.clear();
+    for (int i=0;i<40*25;i++) {
+        colorData.append((uchar)m_data[i].colorMapToNumber(1,2));
+      //  qDebug () << QString::number((uchar)colorData[colorData.count()-1]);
+    }
+    for (int i=0;i<40*25;i++) {
+        uchar c = (uchar)m_data[i].c[3];
+        if (c==255)
+            c=0;
+        if (c!=0)
+            qDebug() << c;
+        data.append((char)c);
+    }
+    QFile file2(fColor);
+    file2.open(QIODevice::WriteOnly);
+    file2.write( colorData );
+    file2.write( data );
+    qDebug() << "Length: " << colorData.count();
+    file2.close();
+
+
+    // Take care of color data!
+
+
+
+
+}
+
 void MultiColorImage::Clear()
 {
     for (int i=0;i<40*25;i++) {
         m_data[i].Clear(m_background);
     }
+}
+
+int MultiColorImage::LookUp(PixelChar pc)
+{
+    for (int i=0;i<m_organized.count();i++) {
+        if (pc.isEqualBytes(m_organized[i]))
+            return i;
+    }
+    // Not found, add
+    m_organized.append(pc);
+    return m_organized.count()-1;
+
+}
+
+void MultiColorImage::CalculateCharIndices()
+{
+    m_organized.clear();
+    m_outputData.clear();
+    int add=0;
+    for (int x=0;x<40*25;x++) {
+        PixelChar pc= m_data[x];
+        if (pc.isEmpty()) {
+            add++;
+            continue;
+        }
+        x+=Eat(x, add);
+        add=0;
+    }
+    m_outputData.append((char)0);
+    m_outputData.append((char)0);
+}
+
+int MultiColorImage::Eat(int start, int add)
+{
+    int length=0;
+    int cur = start;
+    QVector<uchar> arr;
+
+
+
+    while(!m_data[cur].isEmpty()) {
+        arr.append(LookUp(m_data[cur]));
+
+        qDebug() << "Colors : " << m_data[cur].c[0] << " and " <<  m_data[cur].c[1];
+
+        arr.append(m_data[cur].c[1]);
+        cur++;
+        length++;
+    }
+    qDebug() << "Start: " << add << " , " << length;
+    m_outputData.append(add);
+    m_outputData.append(length);
+    for (char i: arr)
+        m_outputData.append(i);
+
+    return length;
+}
+
+void MultiColorImage::SaveCharRascal(QString fileName, QString name)
+{
+    if (QFile::exists(fileName))
+        QFile::remove(fileName);
+
+    QFile file(fileName);
+    file.open(QIODevice::Text | QIODevice::WriteOnly);
+    QTextStream s(&file);
+
+    s<< " /* Auto generated image file */\n\n";
+    s<< " /* Charset */\n";
+    s<< " char_"+name+"_set : array[" + QString::number(m_organized.count()*8) +"] of byte = (\n";
+    bool isEnd = false;
+    for (int i=0;i<m_organized.count();i++) {
+        if (i==m_organized.count()-1)
+            isEnd=true;
+        for (int j=0;j<8;j++) {
+            s<<QString::number(PixelChar::reverse(m_organized[i].p[j]));
+            if (!(isEnd && j==7))
+                s<<",";
+        }
+        if (!isEnd)
+            s<<"\n";
+
+    }
+    s<<");\n";
+
+    s<< " /* Char data */ \n";
+    s<< " char_"+name+"_data : array[" + QString::number(m_outputData.count()) +"] of byte = (\n";
+    isEnd = false;
+    for (int i=0;i<m_outputData.count();i++) {
+           if (i==m_outputData.count()-1)
+               isEnd=true;
+
+            s<< QString::number((uchar)m_outputData[i]);
+            if (!isEnd)
+                   s<<",";
+            if (i%8==0)
+               s<<"\n";
+       }
+       s<<");\n";
+
+
+     // Then generate copying routine
+       int incPos = 0;
+       int shift = 8*64;
+       int size = m_organized.count()*8;
+       int cur = 0;
+       s<< "procedure CopyChar"+name+"Data(); \n";
+       s<< "begin \n";
+
+       while (cur<size) {
+           int count = size-cur;
+           if (count>=255)
+               count=0;
+           s<< "\tmemcpy(char_"+name+"_set, #"+QString::number(incPos)+
+               ", $2800+ "+QString::number(shift) +", #"+QString::number(count)+");"
+            << "\n";
+            incPos+=256;
+            shift+=256;
+            cur+=256;
+       }
+
+
+       s<< "end;\n";
+       file.close();
 }
 
 
@@ -297,6 +479,34 @@ void PixelChar::set(int x, int y, unsigned char color, unsigned char bitMask, un
 
 }
 
+void PixelChar::set(int x, int y, unsigned char color, unsigned char bitMask)
+{
+    if (x<0 || x>=8 || y<0 || y>=8) {
+        qDebug() << "Trying to set " << x << ", " << y << " out of bounds";
+        return;
+    }
+
+    // find index
+    uchar index = 10;
+    if (c[0]==color) index=0;
+    if (c[1]==color) index=1;
+    if (c[2]==color) index=2;
+    if (index==10) {
+        index=3;
+        c[index] = color;
+
+    }
+
+
+
+    // Clear
+    unsigned int f = ~(bitMask << x);
+    p[y] &= f;
+    // Add
+    p[y] |= index<<x;
+
+}
+
 void PixelChar::Clear(unsigned char bg)
 {
     for (int i=0;i<8;i++)
@@ -326,11 +536,47 @@ QString PixelChar::colorMapToAssembler(int i, int j)
     return QString(QString::number(c[i] | c[j]<<4));
 }
 
+uchar PixelChar::colorMapToNumber(int i, int j)
+{
+    if (c[i]==255) c[i] = 0;
+    if (c[j]==255) c[j] = 0;
+    return (c[i] | c[j]<<4);
+}
+
+QByteArray PixelChar::data()
+{
+    QByteArray qb;
+    for (int i=0;i<8;i++)
+        qb.append(reverse(p[i]));
+
+    return qb;
+}
+
+
+
 QString PixelChar::colorToAssembler()
 {
     if (c[3]==255) c[3] = 0;
     return QString(QString::number(c[3]));
 
+}
+
+bool PixelChar::isEmpty()
+{
+    for (int i=0;i<8;i++)
+        if (p[i]!=0)
+            return false;
+
+    return true;
+}
+
+bool PixelChar::isEqualBytes(PixelChar &o)
+{
+    for (int i=0;i<8;i++)
+        if (p[i]!=o.p[i])
+            return false;
+
+    return true;
 }
 
 void PixelChar::Reorganize(unsigned char bitMask, unsigned char scale, unsigned char minCol, unsigned char maxCol)

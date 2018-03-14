@@ -5,6 +5,7 @@
 #include "source/limage/lcolorlist.h"
 #include "source/limage/limage.h"
 #include <QImage>
+#include <QByteArray>
 
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
 
@@ -15,13 +16,18 @@ public:
     unsigned char c[4];
     unsigned char get(int x, int y, unsigned char bitMask);
     void set(int x, int y, unsigned char color, unsigned char bitMask, unsigned char maxCol, unsigned char minCol);
+    void set(int x, int y, unsigned char color, unsigned char bitMask);
     void Clear(unsigned char background);
     QString bitmapToAssembler();
     QString colorMapToAssembler(int i, int j);
+    uchar colorMapToNumber(int i, int j);
+    QByteArray data();
     QString colorToAssembler();
+    bool isEmpty();
+    bool isEqualBytes(PixelChar& o);
     void Reorganize(unsigned char bitMask, unsigned char Scale,unsigned char minCol, unsigned char maxCol);
     int Count(unsigned int col, unsigned char bitMask, unsigned char Scale);
-    unsigned char reverse(unsigned char b) {
+    static unsigned char reverse(unsigned char b) {
        b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
        b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
        b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
@@ -30,15 +36,50 @@ public:
 };
 
 
+/*/class CharPos {
+public:
+    char m_charIndex, m_colorIndex;
+    uint m_x;
+    uint m_y;
+
+    CharPos() {}
+
+    CharPos(uint x,uint y, char charIndex, char colorIndex) {
+        m_charIndex = charIndex;
+        m_x = x;
+        m_y = y;
+        m_colorIndex = colorIndex;
+    }
+
+};
+*/
+
+
+
+
+
+
+
 class MultiColorImage  : public LImage
 {
 public:
+  //  (x shift, x count, data, x shift, x count, data)
 
+    QVector<PixelChar> m_organized;
+//    QVector<CharPos> m_charPos;
+    QByteArray m_outputData;
+    int m_Index = 0;
 
     MultiColorImage(LColorList::Type t);
     PixelChar m_data[40*25];
     PixelChar& getPixelChar(int x, int y);
     void Clear() override;
+
+    int LookUp(PixelChar pc);
+
+    void CalculateCharIndices();
+    int Eat(int start, int add);
+    void SaveCharRascal(QString file, QString name);
 
 //    unsigned char m_border=0, m_background=0;
 
@@ -72,6 +113,7 @@ public:
 
 
     void ExportAsm(QString filename) override;
+    void ExportRasBin(QString filename, QString name);
 
 };
 

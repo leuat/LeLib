@@ -15,7 +15,7 @@
 class LImage
 {
 public:
-    enum Type { QImageBitmap, MultiColorBitmap, HiresBitmap, NotSupported, Tiff };
+    enum Type { QImageBitmap, MultiColorBitmap, HiresBitmap, NotSupported, Tiff, CharMap, FullScreenChar };
 
     LImage() {}
     LImage(LColorList::Type t);
@@ -52,6 +52,9 @@ public:
     virtual void SaveBin(QFile &file) = 0;
     virtual void LoadBin(QFile &file) = 0;
 
+
+    virtual void ExportBin(QFile &file) {}
+    virtual void ImportBin(QFile &file) {}
 
     virtual void Release() {}
 
