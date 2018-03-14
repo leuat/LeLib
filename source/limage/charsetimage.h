@@ -2,6 +2,7 @@
 #define CHARSETIMAGE_H
 
 #include "multicolorimage.h"
+#include <QPixmap>
 
 
 class CharsetImage : public MultiColorImage
@@ -19,7 +20,7 @@ public:
     void ExportBin(QFile& f) override;
     void FromRaw(QByteArray& arr);
     void ToRaw(QByteArray& arr);
-
+    void ToQPixMaps(QVector<QPixmap>& map);
     void setPixel(int x, int y, unsigned int color) override;
 };
 

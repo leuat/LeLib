@@ -17,6 +17,8 @@ class LImage
 public:
     enum Type { QImageBitmap, MultiColorBitmap, HiresBitmap, NotSupported, Tiff, CharMap, FullScreenChar };
 
+
+    enum WriteType { Color, Character };
     LImage() {}
     LImage(LColorList::Type t);
     ~LImage() {
@@ -33,7 +35,7 @@ public:
     float m_scaleX = 0.6f;
     unsigned int m_border=0, m_background=0;
     Type m_type = Type::QImageBitmap;
-
+    WriteType m_writeType = WriteType::Color;
     unsigned char m_bitMask = 0b11;
     unsigned char m_scale = 2;
     unsigned char m_noColors = 4;
@@ -77,6 +79,9 @@ public:
                 setPixel(i,j,img->getPixel(i,j));
     }
 
+    virtual void SetCurrentType(WriteType wt) {
+        m_writeType = wt;
+    }
 
     void CopyTo(LImage* img);
 

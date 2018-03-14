@@ -23,6 +23,7 @@ public:
     uchar colorMapToNumber(int i, int j);
     QByteArray data();
     QString colorToAssembler();
+    QImage toQImage(uchar bmask);
     bool isEmpty();
     bool isEqualBytes(PixelChar& o);
     void Reorganize(unsigned char bitMask, unsigned char Scale,unsigned char minCol, unsigned char maxCol);
@@ -73,7 +74,7 @@ public:
     MultiColorImage(LColorList::Type t);
     PixelChar m_data[40*25];
     PixelChar& getPixelChar(int x, int y);
-    void Clear() override;
+    virtual void Clear() override;
 
     int LookUp(PixelChar pc);
 

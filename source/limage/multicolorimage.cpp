@@ -561,6 +561,16 @@ QString PixelChar::colorToAssembler()
 
 }
 
+QImage PixelChar::toQImage(uchar bmask)
+{
+    QImage img= QImage(8,8,QImage::Format_RGB32);
+    for (int i=0;i<8;i++)
+        for (int j=0;j<8;j++)
+            img.setPixel(i,j,get(i,j, bmask));
+
+    return img;
+}
+
 bool PixelChar::isEmpty()
 {
     for (int i=0;i<8;i++)

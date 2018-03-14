@@ -7,7 +7,7 @@
 class C64FullScreenChar: public MultiColorImage
 {
 public:
-    QByteArray m_rawData;
+    QByteArray m_rawData, m_rawColors;
     bool m_isMultiColor = false;
 
     int m_charWidth = 40;
@@ -19,8 +19,11 @@ public:
     C64FullScreenChar(LColorList::Type t);
 
 
-    void SetColor(uchar col, uchar idx);
+    bool m_charMode = true; // or colorMode
 
+
+    void SetColor(uchar col, uchar idx);
+    void Clear() override;
     void ImportBin(QFile& f) override;
     void ExportBin(QFile& f) override;
 //    void FromRaw(QByteArray& arr);

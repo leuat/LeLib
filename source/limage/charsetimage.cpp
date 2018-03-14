@@ -66,6 +66,17 @@ void CharsetImage::ToRaw(QByteArray &arr)
     }
 }
 
+void CharsetImage::ToQPixMaps(QVector<QPixmap> &map)
+{
+    map.clear();
+    for (int i=0;i<255;i++) {
+        QImage img = m_data[i].toQImage(m_bitMask);
+        QPixmap p;
+        p.fromImage(img);
+        map.append(p);
+    }
+}
+
 void CharsetImage::setPixel(int x, int y, unsigned int color)
 {
     {
