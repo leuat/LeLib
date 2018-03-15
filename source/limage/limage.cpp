@@ -21,6 +21,8 @@ unsigned char LImage::TypeToChar(LImage::Type t)
         return 1;
     if (t==HiresBitmap)
         return 2;
+    if (t==LevelEditor)
+        return 3;
 
 
     return 255;
@@ -34,6 +36,8 @@ LImage::Type LImage::CharToType(unsigned char c)
         return MultiColorBitmap;
     if (c==2)
         return HiresBitmap;
+    if (c==3)
+        return LevelEditor;
 
 
     return NotSupported;

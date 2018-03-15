@@ -7,6 +7,7 @@
 #include "source/limage/limagetiff.h"
 #include "source/limage/charsetimage.h"
 #include "source/limage/c64fullscreenchar.h"
+#include "source/limage/imageleveleditor.h"
 
 class LImageFactory {
 public:
@@ -24,6 +25,8 @@ public:
             return new CharsetImage(colorType);
         if (t == LImage::Type::FullScreenChar)
             return new C64FullScreenChar(colorType);
+        if (t == LImage::Type::LevelEditor)
+            return new ImageLevelEditor(colorType);
 
         qDebug() << "ERROR: LImageFactory could not find type " << t;
         return nullptr;

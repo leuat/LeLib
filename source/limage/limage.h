@@ -15,7 +15,8 @@
 class LImage
 {
 public:
-    enum Type { QImageBitmap, MultiColorBitmap, HiresBitmap, NotSupported, Tiff, CharMap, FullScreenChar };
+    enum Type { QImageBitmap, MultiColorBitmap, HiresBitmap,
+                NotSupported, Tiff, CharMap, FullScreenChar, LevelEditor};
 
 
     enum WriteType { Color, Character };

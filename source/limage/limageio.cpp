@@ -24,6 +24,8 @@ bool LImageIO::Save(QString filename, LImage* img)
     unsigned char imageType = LImage::TypeToChar(img->m_type);
     unsigned char colorType = LColorList::TypeToChar(img->m_colorList.m_type);
 
+    // 7 + 4 + 1 + 1 = 13
+
     file.write( ( char * )( header ), array.count() );
     file.write( ( char * )( version ),sizeof(float) );
     file.write( ( char * )( &imageType ),1 );
