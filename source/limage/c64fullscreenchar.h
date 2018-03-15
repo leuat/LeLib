@@ -13,16 +13,16 @@ public:
     int m_charWidth = 40;
     int m_charHeight = 25;
 
-    CharsetImage* m_charset;
+    CharsetImage* m_charset = nullptr;
 
     PixelChar m_color;
     C64FullScreenChar(LColorList::Type t);
 
 
-    bool m_charMode = true; // or colorMode
+//    bool m_charMode = true; // or colorMode
 
 
-    void SetColor(uchar col, uchar idx);
+    void SetColor(uchar col, uchar idx) override;
     void Clear() override;
     void ImportBin(QFile& f) override;
     void ExportBin(QFile& f) override;

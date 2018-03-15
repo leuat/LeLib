@@ -41,6 +41,8 @@ public:
     unsigned char m_noColors = 4;
     unsigned char m_minCol = 1;
 
+    unsigned char m_extraCols[4];
+
     LColorList m_colorList;
 
 
@@ -48,6 +50,7 @@ public:
 
     virtual void setPixel(int x, int y, unsigned int color) = 0;
     virtual unsigned int getPixel(int x, int y) = 0;
+    virtual void SetColor(uchar col, uchar idx) {}
 
 
 

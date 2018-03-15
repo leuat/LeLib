@@ -23,7 +23,7 @@ public:
     uchar colorMapToNumber(int i, int j);
     QByteArray data();
     QString colorToAssembler();
-    QImage toQImage(uchar bmask);
+    QImage toQImage(int size, uchar bmask, LColorList& lst);
     bool isEmpty();
     bool isEqualBytes(PixelChar& o);
     void Reorganize(unsigned char bitMask, unsigned char Scale,unsigned char minCol, unsigned char maxCol);

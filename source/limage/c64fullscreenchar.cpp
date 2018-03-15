@@ -2,10 +2,11 @@
 
 C64FullScreenChar::C64FullScreenChar(LColorList::Type t) : MultiColorImage(t)
 {
-    m_charset = new CharsetImage(t);
+/*    m_charset = new CharsetImage(t);
     QFile f("C:/Users/leuat/OneDrive/Documents/GitHub/pmm/pmm/charsets/test_mc.bin");
     f.open(QIODevice::ReadOnly);
-    m_charset->ImportBin(f);
+    m_charset->ImportBin(f);*/
+
     m_width = 320;
     m_height = 200;
     m_scaleX = 1.0f;
@@ -19,11 +20,18 @@ C64FullScreenChar::C64FullScreenChar(LColorList::Type t) : MultiColorImage(t)
     m_rawColors.resize(m_charWidth*m_charHeight);
     Clear();
 
+    SetColor(1,1);
+    SetColor(2,2);
+
+
 }
 
 void C64FullScreenChar::SetColor(uchar col, uchar idx)
 {
+    if (m_charset==nullptr)
+        return;
     m_charset->SetColor(col, idx);
+    m_extraCols[idx] = col;
 }
 
 void C64FullScreenChar::Clear()
@@ -32,7 +40,7 @@ void C64FullScreenChar::Clear()
         m_rawData[i] = 0x20;
 
     for (int i=0;i<m_rawData.count();i++)
-        m_rawColors[i] = 0x8 + 0x5;
+        m_rawColors[i] = 0x5;
 
 }
 
@@ -67,7 +75,6 @@ void C64FullScreenChar::BuildImage()
             uchar val = m_rawData[j*m_charWidth + i];
 
             if (val!=0 && rand()%100==0)
-            qDebug() << val;
             for (int k=0;k<8;k++)
              m_data[i + j*m_charWidth].p[k] = rand()%255; //m_charset->m_data[val];
         }
@@ -76,6 +83,9 @@ void C64FullScreenChar::BuildImage()
 
 void C64FullScreenChar::setPixel(int x, int y, unsigned int color)
 {
+    if (x>=320 || x<0 || y>=200 || y<0)
+        return;
+
     if (m_writeType==Character)
        m_rawData[x/8+ (y/8)*m_charWidth] = color;
     if (m_writeType==Color)
@@ -85,6 +95,10 @@ void C64FullScreenChar::setPixel(int x, int y, unsigned int color)
 
 unsigned int C64FullScreenChar::getPixel(int x, int y)
 {
+    if (m_charset==nullptr)
+        return 0;
+    if (x>=320 || x<0 || y>=200 || y<0)
+        return 0;
     uchar v = m_rawData[(x/8) + (y/8)*m_charWidth];
     uchar col = m_rawColors[(x/8) + (y/8)*m_charWidth];
     int ix = (x % (8)/2)*2;//- (dx*40);
@@ -93,11 +107,14 @@ unsigned int C64FullScreenChar::getPixel(int x, int y)
  //   return pc.get(m_scale*ix, iy, m_bitMask);
 
 
+
     int pos = v;
 //    return m_charset->m_data[pos].get(v + (2*x)&7, v+ y&7,m_bitMask);
     uchar val = m_charset->m_data[pos].get(ix, iy,m_charset->m_bitMask);
     if (val==m_charset->m_data[pos].c[3])
         val = col;
+
+
     return val;
 
 }
@@ -106,12 +123,17 @@ void C64FullScreenChar::CopyFrom(LImage *mc)
 {
     C64FullScreenChar* c = dynamic_cast<C64FullScreenChar*>(mc);
     if (c!=nullptr) {
+        if (c->m_charset==nullptr)
+            return;
+
         m_rawData.resize(m_charHeight*m_charWidth);
+        m_rawColors.resize(m_charHeight*m_charWidth);
         for (int i=0;i<m_rawData.count();i++) {
             m_rawData[i] = c->m_rawData[i];
             m_rawColors[i] = c->m_rawColors[i];
         }
-        //BuildImage();
+        m_charset = c->m_charset;
+        m_writeType = c->m_writeType;
     }
     else
     LImage::CopyFrom(mc);

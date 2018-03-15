@@ -561,12 +561,18 @@ QString PixelChar::colorToAssembler()
 
 }
 
-QImage PixelChar::toQImage(uchar bmask)
+QImage PixelChar::toQImage(int size, uchar bmask, LColorList& lst)
 {
-    QImage img= QImage(8,8,QImage::Format_RGB32);
-    for (int i=0;i<8;i++)
-        for (int j=0;j<8;j++)
-            img.setPixel(i,j,get(i,j, bmask));
+    QImage img= QImage(size,size,QImage::Format_RGB32);
+    for (int i=0;i<size;i++)
+        for (int j=0;j<size;j++) {
+            int x = i/(float)(size)*8;
+            int ix = (x % (8)/2)*2;
+            int y = j/(float)(size)*8;
+            uchar c = get(ix,y, bmask);
+
+            img.setPixel(i,j,lst.m_list[c].color.rgba());
+        }
 
     return img;
 }

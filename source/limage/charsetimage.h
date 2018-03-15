@@ -14,7 +14,7 @@ public:
     CharsetImage(LColorList::Type t);
 
 
-    void SetColor(uchar col, uchar idx);
+    void SetColor(uchar col, uchar idx) override;
 
     void ImportBin(QFile& f) override;
     void ExportBin(QFile& f) override;

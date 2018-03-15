@@ -12,6 +12,9 @@ CharsetImage::CharsetImage(LColorList::Type t) : MultiColorImage(t)
     m_minCol = 0;
     Clear();
     m_type = LImage::Type::CharMap;
+    SetColor(1,1);
+    SetColor(2,2);
+
 
 }
 
@@ -23,6 +26,8 @@ void CharsetImage::SetColor(uchar col, uchar idx)
         m_background = col;
     for (int i=0;i<40*25;i++)
         m_data[i].c[idx] = col;
+
+    m_extraCols[idx] = col;
 }
 
 void CharsetImage::ImportBin(QFile &file)
@@ -70,9 +75,8 @@ void CharsetImage::ToQPixMaps(QVector<QPixmap> &map)
 {
     map.clear();
     for (int i=0;i<255;i++) {
-        QImage img = m_data[i].toQImage(m_bitMask);
-        QPixmap p;
-        p.fromImage(img);
+        QImage img = m_data[i].toQImage(64, m_bitMask, m_colorList);
+        QPixmap p = QPixmap::fromImage(img);
         map.append(p);
     }
 }
