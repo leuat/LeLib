@@ -6,6 +6,14 @@
 #include <QFile>
 #include <QTextStream>
 
+void LGraph::RenderGauss(float mean, float std)
+{
+    for (int i=0;i<m_noBins;i++) {
+        float v = m_index[i];
+        m_value[i] = exp(-(pow(mean-v,2)/(2*std*std)));
+    }
+}
+
 void LGraph::normalizeArea()
 {
     double integralSum = 0;
@@ -24,6 +32,9 @@ void LGraph::normalizeArea()
 
 }
 
+
+
+
 void LGraph::getMinMaxY()
 {
     m_miny = 1E30;
@@ -31,6 +42,19 @@ void LGraph::getMinMaxY()
     for (int i=0;i<m_noBins;i++) {
         m_miny = min(m_value[i], m_miny);
         m_maxy = max(m_value[i], m_maxy);
+    }
+}
+
+void LGraph::CheatStdY(float threshold)
+{
+    getMinMaxY();
+    for (int i=0;i<m_noBins;i++) {
+        m_stdY = abs(m_meanY - m_index[i]);
+        //qDebug() << "max x, val: " <<m_maxy << ",  " << m_value[i];
+
+        if (m_value[i]>m_maxy*threshold)
+            return;
+
     }
 }
 

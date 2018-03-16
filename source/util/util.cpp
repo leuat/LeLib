@@ -79,6 +79,9 @@ QColor Util::colorScale(QColor &col, int mean, int std)
 {
     float f = 1.0/(2*std)*255;
     QVector3D c;
+
+
+
     c.setX((col.red()-mean)*f + mean);
     c.setY((col.green()-mean)*f + mean);
     c.setZ((col.blue()-mean)*f + mean);

@@ -27,31 +27,52 @@ void LTiff::GetMinMax(int count, QColor &minCol, QColor &maxCol, LGraph& hist)
     float minVal = 1E30;
     float maxVal = 0;
 
-    hist.Initialize(50,0,400);
+    hist.Initialize(50,0,420);
+    int cnt = 0;
+//   for (int i=0;i<count;i++) { { {
+    for (int y = 0; y < m_height; y += m_tileHeight) {
+        for (int x = 0; x < m_width; x += m_tileWidth) {
 
-    for (int i=0;i<count;i++){
-        float xx = rand()%m_width;
-        float yy = rand()%m_height;
+            for (int i=0;i<m_tileWidth*m_tileHeight/10;i++) {
 
-        QColor color =  GetTiledRGB(xx,yy,omp_get_thread_num());
-        hist.add(Util::ColorLength(color),1);
-        float len = Util::ColorLength(color);
-        if (len<minVal) {
-            minVal = len;
-            minCol = color;
-        }
-        if (len>minVal) {
-            maxVal = len;
-            maxCol = color;
-        }
-        //hist.Add(len);
-        if (i%10==0) bufferStack.UpdateBuffer();
-        if (Util::CancelSignal) {
-            return;
-        }
+                float xx = rand()%m_tileWidth + x;
+                float yy = rand()%m_tileHeight + y;
 
+                //float xx = rand()%m_width;
+                //float yy = rand()%m_height;
+
+                QColor color =  GetTiledRGB(xx,yy,omp_get_thread_num());
+
+
+                hist.m_avg=hist.m_avg+ 1/3.0 * (color.red()+color.green()+color.blue());
+                float len = Util::ColorLength(color) / sqrt(3);
+                if (len>1 && len<220)
+                {
+                hist.add(len,1);
+/*                if (rand()%1000==0) {
+                    qDebug() << len;
+                }*/
+
+                if (len<minVal) {
+                    minVal = len;
+                    minCol = color;
+                }
+                if (len>minVal) {
+                    maxVal = len;
+                    maxCol = color;
+                }
+                }
+                //hist.Add(len);
+                if (i%10==0) bufferStack.UpdateBuffer();
+                if (Util::CancelSignal) {
+                    return;
+                }
+                cnt++;
+            }
+        }
 
     }
+    hist.m_avg/=cnt;
 
 }
 
@@ -62,23 +83,35 @@ void LTiff::AutoContrast(LTiff &oTiff, Counter *counter, float std)
 
     *counter = Counter((int)(length*width),"AutoContrast ", false);
     AllocateBuffers();
-    LGraph hist;
+    LGraph hist, gauss;
     QColor min_c, max_c;
     oTiff.GetMinMax(50000,min_c, max_c, hist);
     hist.Normalize();
 
-    hist.SaveText("histogram.plt");
+    QString f = oTiff.m_filename.split("\\").last().split(".")[0];
+    hist.SaveText("histogram"+f+".plt");
+
     hist.Mean();
     hist.Std();
+
+
+    std = 2*hist.FitGaussStd(hist.m_meanY,2, 150, 200);
+
+
+    gauss.CopyFrom(hist);
+    gauss.RenderGauss(hist.m_meanY, std);
+    gauss.SaveText("gauss_"+f+".plt");
+
     qDebug() << "meanY :" << hist.m_meanY;
     qDebug() << "std :" << std;
+//    std = hist.m_std;
 
     float mean = hist.m_meanY;
-//    float std = 4;
+//    std = hist.m_stdY;
 
     for (uint y = 0; y < m_height; y += m_tileHeight) {
         for (uint x = 0; x < m_width; x += m_tileWidth) {
-
+           // qDebug() << x;
             for (uint i = 0;i<m_tileWidth;i++)
                 for (uint j=0;j<m_tileHeight;j++) {
 
@@ -86,9 +119,9 @@ void LTiff::AutoContrast(LTiff &oTiff, Counter *counter, float std)
                     float yy = y+j;
 
                     QColor color =  oTiff.GetTiledRGB(xx,yy,omp_get_thread_num());
-                    //float f = Util::ColorLength(color);
-                    //color = Util::Gamma(color, 0.5, 0.0);
+
                     color = Util::colorScale(color, mean, std);
+
                     ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 2] = color.red();
                     ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 1] = color.green();
                     ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 0] = color.blue();
