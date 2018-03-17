@@ -1,20 +1,35 @@
 #include "imageleveleditor.h"
-
+#include "source/util/util.h"
 
 void ImageLevelEditor::SetLevel(QPoint f)
 {
+    // Clamp'
+    f.setX(Util::clamp(f.x(), 0, m_meta.m_sizex-1));
+    f.setY(Util::clamp(f.y(), 0, m_meta.m_sizey-1));
+
     m_currentLevelPos = f;
     if (f.x()<0 || f.x()>=m_meta.m_sizex || f.y()<0 || f.y()>=m_meta.m_sizey)
         return;
     m_currentLevel = m_levels[f.x() + f.y()*m_meta.m_sizex];
 
-  //  qDebug() << QString::number(m_currentLevel->m_ExtraData[1]);
 
-    SetColor(m_currentLevel->m_ExtraData[0], 0);
+//    qDebug() << "Current colors:";
+
+    for (int i=0;i<3;i++)
+        m_extraCols[i] = m_currentLevel->m_ExtraData[i];
+    m_background = m_currentLevel->m_ExtraData[0];
+//        qDebug() << QString::number(m_currentLevel->m_ExtraData[i]);
+
+    if (m_charset!=nullptr) {
+        m_charset->SetColor(m_currentLevel->m_ExtraData[0], 0);
+        m_charset->SetColor(m_currentLevel->m_ExtraData[1], 1);
+        m_charset->SetColor(m_currentLevel->m_ExtraData[2], 2);
+    }
+
+/*    SetColor(m_currentLevel->m_ExtraData[0], 0);
     SetColor(m_currentLevel->m_ExtraData[1], 1);
     SetColor(m_currentLevel->m_ExtraData[2], 2);
-//    SetColor(m_currentLevel->m_ExtraData[3], 3);
-
+*/
 }
 
 ImageLevelEditor::ImageLevelEditor(LColorList::Type t)  : MultiColorImage(t)
@@ -27,6 +42,13 @@ ImageLevelEditor::ImageLevelEditor(LColorList::Type t)  : MultiColorImage(t)
     m_scale = 1;
     m_minCol = 0;
     m_type = LImage::Type::LevelEditor;
+
+    m_supports.asmExport = false;
+    m_supports.binaryLoad = false;
+    m_supports.binarySave = false;
+    m_supports.flfSave = true;
+    m_supports.flfLoad = true;
+    m_supports.asmExport = false;
 
 
 }
@@ -51,7 +73,13 @@ void ImageLevelEditor::SetColor(uchar col, uchar idx)
 {
     if (m_charset==nullptr)
         return;
+
+    qDebug() << "SetColor being set..." << QString::number(col) << " and " << QString::number(idx);
+
     m_currentLevel->m_ExtraData[idx] = col;
+    m_extraCols[idx] = col;
+    if (idx==0)
+        m_background = col;
     m_charset->SetColor(col, idx);
 }
 
@@ -77,17 +105,33 @@ void ImageLevelEditor::LoadBin(QFile &file)
 {
     QByteArray header = file.read(9);
     m_meta.fromHeader(header);
-    Initialize(m_meta);
     m_meta.Calculate();
+    Initialize(m_meta);
     for (CharmapLevel* l : m_levels) {
         l->m_CharData = file.read(m_meta.dataSize());
         l->m_ColorData = file.read(m_meta.dataSize());
         l->m_ExtraData = file.read(m_meta.m_extraDataSize);
     }
 
-    qDebug() << "Loadbin Setlevel";
     SetLevel(QPoint(0,0));
-    qDebug() << QString::number(m_currentLevel->m_ExtraData[1]);
+//    qDebug() << QString::number(m_currentLevel->m_ExtraData[1]);
+}
+
+void ImageLevelEditor::KeyPress(QKeyEvent *e)
+{
+    QPoint dir(0,0);
+    if (e->key()==Qt::Key_W)
+        dir.setY(-1);
+    if (e->key()==Qt::Key_A)
+        dir.setX(-1);
+    if (e->key()==Qt::Key_S)
+        dir.setY(1);
+    if (e->key()==Qt::Key_D)
+        dir.setX(1);
+
+
+    if (dir.x()!=0 || dir.y()!=0)
+        SetLevel(m_currentLevelPos + dir);
 }
 
 
@@ -189,25 +233,50 @@ void ImageLevelEditor::CopyFrom(LImage *mc)
 
 
         CharmapGlobalData d = c->m_meta;
-        d.m_sizex = 1;
-        d.m_sizey = 1;
+        //d.m_sizex = 1;
+        //d.m_sizey = 1;
         Initialize(c->m_meta);
 
-        for (int i=0;i<m_meta.dataSize();i++) {
+        for (int i=0;i<m_meta.m_sizex*m_meta.m_sizey;i++) {
+            m_levels[i]->m_CharData = c->m_levels[i]->m_CharData;
+            m_levels[i]->m_ColorData = c->m_levels[i]->m_ColorData;
+            m_levels[i]->m_ExtraData = c->m_levels[i]->m_ExtraData;
+        }
+        /*for (int i=0;i<m_meta.dataSize();i++) {
             m_currentLevel->m_CharData[i]  = c->m_currentLevel->m_CharData[i];
             m_currentLevel->m_ColorData[i]  = c->m_currentLevel->m_ColorData[i];
         }
         for (int i=0;i<c->m_currentLevel->m_ExtraData.count();i++) {
             m_currentLevel->m_ExtraData[i] = c->m_currentLevel->m_ExtraData[i];
         }
+        */
         m_charset = c->m_charset;
         m_writeType = c->m_writeType;
+        for (int i=0;i<4;i++)
+            m_extraCols[i] = c->m_extraCols[i];
         //SetLevel(QPoint(0,0));
+        m_currentLevelPos = c->m_currentLevelPos;
+        SetLevel(m_currentLevelPos);
 
     }
     else
     LImage::CopyFrom(mc);
 
+}
+
+void ImageLevelEditor::LoadCharset(QString file)
+{
+    if (!QFile::exists(file)) {
+        qDebug() << "Could not find file " << file;
+        return;
+    }
+
+    QFile f(file);
+
+    f.open(QIODevice::ReadOnly);
+    m_charset = new CharsetImage(m_colorList.m_type);
+    m_charset->ImportBin(f);
+    f.close();
 }
 
 

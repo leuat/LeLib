@@ -12,6 +12,16 @@
 #include <QDebug>
 #include <QLabel>
 
+class LImageSupports {
+public:
+    bool binarySave = false;
+    bool binaryLoad = false;
+    bool flfSave = false;
+    bool flfLoad = false;
+    bool asmExport = false;
+};
+
+
 class LImage
 {
 public:
@@ -25,7 +35,7 @@ public:
     ~LImage() {
         Release();
     }
-
+    LImageSupports m_supports;
 
     static unsigned char TypeToChar(Type t);
     static Type CharToType(unsigned char c);
@@ -53,8 +63,9 @@ public:
     virtual unsigned int getPixel(int x, int y) = 0;
     virtual void SetColor(uchar col, uchar idx) {}
 
+    virtual void LoadCharset(QString file) {}
 
-
+    virtual void KeyPress(QKeyEvent *e) {}
     virtual void SaveBin(QFile &file) = 0;
     virtual void LoadBin(QFile &file) = 0;
 

@@ -15,6 +15,13 @@ CharsetImage::CharsetImage(LColorList::Type t) : MultiColorImage(t)
     SetColor(1,1);
     SetColor(2,2);
 
+    m_supports.asmExport = false;
+    m_supports.binaryLoad = true;
+    m_supports.binarySave = true;
+    m_supports.flfSave = false;
+    m_supports.flfLoad = true;
+    m_supports.asmExport = false;
+
 
 }
 

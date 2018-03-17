@@ -5,6 +5,7 @@
 #include "charsetimage.h"
 #include <QByteArray>
 #include <QVector>
+#include <QKeyEvent>
 
 
 class CharmapLevel {
@@ -134,6 +135,8 @@ public:
 //    void ToRaw(QByteArray& arr);
 
 
+    void KeyPress(QKeyEvent *e) override;
+
 
     QVector<QPixmap> CreateIcons();
 
@@ -141,6 +144,7 @@ public:
     unsigned int getPixel(int x, int y) override;
     void CopyFrom(LImage* mc) override;
 
+    virtual void LoadCharset(QString file) override;
 
     bool PixelToPos(int x, int y, int& pos);
 

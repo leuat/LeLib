@@ -9,6 +9,13 @@ LImageQImage::LImageQImage(LColorList::Type t)  : LImage(t)
     Initialize(320,200);
     m_scale = 1;
     m_type = LImage::Type::QImageBitmap;
+    m_supports.asmExport = false;
+    m_supports.binaryLoad = false;
+    m_supports.binarySave = false;
+    m_supports.flfSave = true;
+    m_supports.flfLoad = true;
+    m_supports.asmExport = false;
+
 }
 
 void LImageQImage::LoadBin(QFile& file)

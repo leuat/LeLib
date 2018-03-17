@@ -13,6 +13,13 @@ MultiColorImage::MultiColorImage(LColorList::Type t) : LImage(t)
     m_scaleX = 2.5f;
     Clear();
     m_type = LImage::Type::MultiColorBitmap;
+    m_supports.asmExport = false;
+    m_supports.binaryLoad = false;
+    m_supports.binarySave = false;
+    m_supports.flfSave = true;
+    m_supports.flfLoad = true;
+    m_supports.asmExport = false;
+
 
 }
 
