@@ -11,6 +11,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QLabel>
+#include <QTableWidget>
 
 class LImageSupports {
 public:
@@ -69,6 +70,13 @@ public:
     virtual void SaveBin(QFile &file) = 0;
     virtual void LoadBin(QFile &file) = 0;
 
+
+    virtual void BuildData(QTableWidget* tbl) {}
+    virtual void StoreData(QTableWidget* tbl) {}
+
+    virtual QPoint GetCurrentPosInImage(float x, float y) {
+        return QPoint(x,y);
+    }
 
     virtual void ExportBin(QFile &file) {}
     virtual void ImportBin(QFile &file) {}

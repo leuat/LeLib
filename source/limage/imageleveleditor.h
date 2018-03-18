@@ -50,11 +50,14 @@ private:
     int m_totalSize;
     int m_headerSize;
 
+
 public:
     int m_width, m_height;
     int m_sizex, m_sizey;
     int m_startx, m_starty;
     int m_extraDataSize;
+    int m_dataChunks;
+    int m_dataChunkSize;
 
     int scale = 1;
     bool m_multiChar = true;
@@ -81,8 +84,10 @@ public:
         ba[3] = m_height;
         ba[4] = m_startx;
         ba[5] = m_starty;
-        ba[6] = (uchar)(m_levelSize >>8)&0xFF;
-        ba[7] = (uchar)(m_levelSize&0xFF);
+//        ba[6] = (uchar)(m_levelSize >>8)&0xFF;
+//        ba[7] = (uchar)(m_levelSize&0xFF);
+        ba[6] = m_dataChunks;
+        ba[7] = m_dataChunkSize;
         ba[8] = m_extraDataSize;
         return ba;
     }
@@ -95,7 +100,9 @@ public:
         m_startx = ba[4];
         m_starty = ba[5];
 
-        m_levelSize = ba[7] + ba[6]<<8;
+        //m_levelSize = ba[7] + ba[6]<<8;
+        m_dataChunks = ba[6];
+        m_dataChunkSize = ba[7];
         m_extraDataSize = ba[8];
 
     }
@@ -135,9 +142,14 @@ public:
 //    void ToRaw(QByteArray& arr);
 
 
+    void BuildData(QTableWidget* tbl ) override;
+    void StoreData(QTableWidget* tbl ) override;
+
     void KeyPress(QKeyEvent *e) override;
 
-
+    virtual QPoint GetCurrentPosInImage(float x, float y) {
+        return QPoint(x/8,y/8);
+    }
     QVector<QPixmap> CreateIcons();
 
     void setPixel(int x, int y, unsigned int color) override;
@@ -145,6 +157,8 @@ public:
     void CopyFrom(LImage* mc) override;
 
     virtual void LoadCharset(QString file) override;
+
+    void Resize(CharmapGlobalData newMeta);
 
     bool PixelToPos(int x, int y, int& pos);
 

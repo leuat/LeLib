@@ -114,7 +114,52 @@ void ImageLevelEditor::LoadBin(QFile &file)
     }
 
     SetLevel(QPoint(0,0));
-//    qDebug() << QString::number(m_currentLevel->m_ExtraData[1]);
+    //    qDebug() << QString::number(m_currentLevel->m_ExtraData[1]);
+}
+
+void ImageLevelEditor::BuildData(QTableWidget *tbl)
+{
+    int chunks = m_meta.m_dataChunks;
+    int size = m_meta.m_dataChunkSize;
+
+    tbl->setRowCount(chunks);
+    tbl->setColumnCount(size);
+    for (int i=0;i<size;i++)
+        tbl->setColumnWidth(i,45);
+    int i=0;
+    int j=0;
+//    qDebug() << "Extra data count: " << m_currentLevel->m_ExtraData.count();
+    for (int k=3;k<m_currentLevel->m_ExtraData.count();k++) {
+        tbl->setItem(j,i,new QTableWidgetItem(QString::number(m_currentLevel->m_ExtraData[k])));
+        if (++i>=size) {
+            i=0;
+            j++;
+        }
+
+    }
+
+}
+
+void ImageLevelEditor::StoreData(QTableWidget *tbl)
+{
+    int i=0;
+    int j=0;
+
+    for (int k=3;k<m_currentLevel->m_ExtraData.count();k++) {
+        if (tbl->item(j,i)==nullptr)
+                return;
+        int val = tbl->item(j,i)->text().toInt();
+/*        if (val!=0)
+        {
+            qDebug() << " data " << j << ", "<< i << "  : " << val;
+        }*/
+        m_currentLevel->m_ExtraData[k] = val;
+        if (++i>=tbl->columnCount()) {
+            i=0;
+            j++;
+        }
+
+    }
 }
 
 void ImageLevelEditor::KeyPress(QKeyEvent *e)
@@ -277,6 +322,20 @@ void ImageLevelEditor::LoadCharset(QString file)
     m_charset = new CharsetImage(m_colorList.m_type);
     m_charset->ImportBin(f);
     f.close();
+}
+
+void ImageLevelEditor::Resize(CharmapGlobalData newMeta)
+{
+    if (newMeta.m_dataChunks!=m_meta.m_dataChunks || newMeta.m_dataChunkSize!=m_meta.m_dataChunkSize) {
+      //  qDebug() << "Resizing datachunks";
+        m_meta.m_dataChunks = newMeta.m_dataChunks;
+        m_meta.m_dataChunkSize = newMeta.m_dataChunkSize;
+        m_meta.m_extraDataSize = 3 + m_meta.m_dataChunkSize*m_meta.m_dataChunks;
+
+        for (int i=0;i<m_meta.m_sizex*m_meta.m_sizey;i++)
+            m_levels[i]->m_ExtraData.resize(m_meta.m_extraDataSize);
+
+    }
 }
 
 
