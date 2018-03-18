@@ -26,6 +26,13 @@ void CIniFile::Load(QString fname) {
             it.name = tok[0].toLower().trimmed();
             it.strval = tok[1].toLower().trimmed();
             it.dval  = tok[1].toFloat();
+            if (tok[1].split(",").count()!=1) {
+                it.lst = tok[1].split(",");
+                for (QString& s : it.lst) {
+                    s = s.trimmed();
+                 //   qDebug() << s;
+                }
+            }
             items.push_back(it);
         }
     }

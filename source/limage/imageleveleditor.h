@@ -78,32 +78,32 @@ public:
     QByteArray toHeader() {
         QByteArray ba;
         ba.resize(9);
-        ba[0] = m_sizex;
-        ba[1] = m_sizey;
-        ba[2] = m_width;
-        ba[3] = m_height;
-        ba[4] = m_startx;
-        ba[5] = m_starty;
+        ba[0] = (uint)m_sizex;
+        ba[1] = (uint)m_sizey;
+        ba[2] = (uint)m_width;
+        ba[3] = (uint)m_height;
+        ba[4] = (uint)m_startx;
+        ba[5] = (uint)m_starty;
 //        ba[6] = (uchar)(m_levelSize >>8)&0xFF;
 //        ba[7] = (uchar)(m_levelSize&0xFF);
-        ba[6] = m_dataChunks;
-        ba[7] = m_dataChunkSize;
-        ba[8] = m_extraDataSize;
+        ba[6] = (uint)m_dataChunks;
+        ba[7] = (uint)m_dataChunkSize;
+        ba[8] = (uint)m_extraDataSize;
         return ba;
     }
 
     void fromHeader(QByteArray ba) {
-        m_sizex = ba[0];
-        m_sizey = ba[1];
-        m_width = ba[2];
-        m_height = ba[3];
-        m_startx = ba[4];
-        m_starty = ba[5];
+        m_sizex = (uchar)ba[0];
+        m_sizey = (uchar)ba[1];
+        m_width = (uchar)ba[2];
+        m_height = (uchar)ba[3];
+        m_startx = (uchar)ba[4];
+        m_starty = (uchar)ba[5];
 
         //m_levelSize = ba[7] + ba[6]<<8;
-        m_dataChunks = ba[6];
-        m_dataChunkSize = ba[7];
-        m_extraDataSize = ba[8];
+        m_dataChunks = (uchar)ba[6];
+        m_dataChunkSize = (uchar)ba[7];
+        m_extraDataSize = (uchar)ba[8];
 
     }
 
@@ -142,7 +142,7 @@ public:
 //    void ToRaw(QByteArray& arr);
 
 
-    void BuildData(QTableWidget* tbl ) override;
+    void BuildData(QTableWidget* tbl, QStringList header ) override;
     void StoreData(QTableWidget* tbl ) override;
 
     void KeyPress(QKeyEvent *e) override;

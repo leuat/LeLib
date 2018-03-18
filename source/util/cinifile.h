@@ -11,6 +11,7 @@
 class CItem {
 public:
     QString name, strval;
+    QStringList lst;
     double dval;
 };
 
@@ -29,6 +30,14 @@ public:
                 return items[i].strval;
         }
         return "";
+    }
+
+    QStringList getStringList(QString name) {
+        for (int i=0;i<items.size();i++) {
+            if (items[i].name==name.toLower().trimmed())
+                return items[i].lst;
+        }
+        return QStringList();
     }
 
     void setString(QString name, QString val) {

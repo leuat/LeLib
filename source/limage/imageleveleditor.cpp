@@ -74,7 +74,7 @@ void ImageLevelEditor::SetColor(uchar col, uchar idx)
     if (m_charset==nullptr)
         return;
 
-    qDebug() << "SetColor being set..." << QString::number(col) << " and " << QString::number(idx);
+//    qDebug() << "SetColor being set..." << QString::number(col) << " and " << QString::number(idx);
 
     m_currentLevel->m_ExtraData[idx] = col;
     m_extraCols[idx] = col;
@@ -91,6 +91,8 @@ void ImageLevelEditor::Clear()
 
 void ImageLevelEditor::SaveBin(QFile &file)
 {
+
+
     file.write(m_meta.toHeader());
     int i=0;
     for (CharmapLevel* l : m_levels) {
@@ -106,6 +108,7 @@ void ImageLevelEditor::LoadBin(QFile &file)
     QByteArray header = file.read(9);
     m_meta.fromHeader(header);
     m_meta.Calculate();
+
     Initialize(m_meta);
     for (CharmapLevel* l : m_levels) {
         l->m_CharData = file.read(m_meta.dataSize());
@@ -114,21 +117,20 @@ void ImageLevelEditor::LoadBin(QFile &file)
     }
 
     SetLevel(QPoint(0,0));
-    //    qDebug() << QString::number(m_currentLevel->m_ExtraData[1]);
 }
 
-void ImageLevelEditor::BuildData(QTableWidget *tbl)
+void ImageLevelEditor::BuildData(QTableWidget *tbl, QStringList header)
 {
     int chunks = m_meta.m_dataChunks;
     int size = m_meta.m_dataChunkSize;
 
     tbl->setRowCount(chunks);
     tbl->setColumnCount(size);
+    tbl->setHorizontalHeaderLabels(header);
     for (int i=0;i<size;i++)
         tbl->setColumnWidth(i,45);
-    int i=0;
+        int i=0;
     int j=0;
-//    qDebug() << "Extra data count: " << m_currentLevel->m_ExtraData.count();
     for (int k=3;k<m_currentLevel->m_ExtraData.count();k++) {
         tbl->setItem(j,i,new QTableWidgetItem(QString::number(m_currentLevel->m_ExtraData[k])));
         if (++i>=size) {
@@ -330,10 +332,15 @@ void ImageLevelEditor::Resize(CharmapGlobalData newMeta)
       //  qDebug() << "Resizing datachunks";
         m_meta.m_dataChunks = newMeta.m_dataChunks;
         m_meta.m_dataChunkSize = newMeta.m_dataChunkSize;
-        m_meta.m_extraDataSize = 3 + m_meta.m_dataChunkSize*m_meta.m_dataChunks;
 
-        for (int i=0;i<m_meta.m_sizex*m_meta.m_sizey;i++)
+        m_meta.m_extraDataSize = 3 + m_meta.m_dataChunkSize*m_meta.m_dataChunks;
+        m_meta.Calculate();
+        for (int i=0;i<m_meta.m_sizex*m_meta.m_sizey;i++) {
+            int k = m_levels[i]->m_ExtraData.count();
             m_levels[i]->m_ExtraData.resize(m_meta.m_extraDataSize);
+            for (int j=k;j<m_meta.m_extraDataSize; j++)
+                m_levels[i]->m_ExtraData[j]=0;
+        }
 
     }
 }

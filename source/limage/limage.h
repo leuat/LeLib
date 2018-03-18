@@ -71,7 +71,7 @@ public:
     virtual void LoadBin(QFile &file) = 0;
 
 
-    virtual void BuildData(QTableWidget* tbl) {}
+    virtual void BuildData(QTableWidget* tbl, QStringList header) {}
     virtual void StoreData(QTableWidget* tbl) {}
 
     virtual QPoint GetCurrentPosInImage(float x, float y) {
