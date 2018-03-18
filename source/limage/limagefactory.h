@@ -8,6 +8,7 @@
 #include "source/limage/charsetimage.h"
 #include "source/limage/c64fullscreenchar.h"
 #include "source/limage/imageleveleditor.h"
+#include "source/limage/limagecharsetregular.h"
 
 class LImageFactory {
 public:
@@ -21,8 +22,10 @@ public:
             return new StandardColorImage(colorType);
         if (t == LImage::Type::Tiff)
             return new LImageTiff(colorType);
-        if (t == LImage::Type::CharMap)
+        if (t == LImage::Type::CharMapMulticolor)
             return new CharsetImage(colorType);
+        if (t == LImage::Type::CharmapRegular)
+            return new LImageCharsetRegular(colorType);
         if (t == LImage::Type::FullScreenChar)
             return new C64FullScreenChar(colorType);
         if (t == LImage::Type::LevelEditor)

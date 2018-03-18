@@ -11,7 +11,7 @@ CharsetImage::CharsetImage(LColorList::Type t) : MultiColorImage(t)
     m_width = 160;
     m_minCol = 0;
     Clear();
-    m_type = LImage::Type::CharMap;
+    m_type = LImage::Type::CharMapMulticolor;
     SetColor(1,1);
     SetColor(2,2);
 

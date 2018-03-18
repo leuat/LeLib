@@ -13,12 +13,12 @@ MultiColorImage::MultiColorImage(LColorList::Type t) : LImage(t)
     m_scaleX = 2.5f;
     Clear();
     m_type = LImage::Type::MultiColorBitmap;
-    m_supports.asmExport = false;
+    m_supports.asmExport = true;
     m_supports.binaryLoad = false;
     m_supports.binarySave = false;
     m_supports.flfSave = true;
     m_supports.flfLoad = true;
-    m_supports.asmExport = false;
+    m_supports.asmExport = true;
 
 
 }
@@ -131,6 +131,11 @@ void MultiColorImage::CopyFrom(LImage* img)
 
 void MultiColorImage::ExportAsm(QString filename)
 {
+    QString filen = filename.split(".")[0];
+    ExportRasBin(filen,"");
+
+    return;
+    // Fuck this
     if (QFile::exists(filename))
          QFile::remove(filename);
     QFile file(filename);

@@ -54,7 +54,8 @@ SOURCES += \
     source/util/cinifile.cpp \
     source/limage/charsetimage.cpp \
     source/limage/c64fullscreenchar.cpp \
-    source/limage/imageleveleditor.cpp
+    source/limage/imageleveleditor.cpp \
+    source/limage/limagecharsetregular.cpp
 
 HEADERS += \
         lelib.h \
@@ -81,7 +82,8 @@ HEADERS += \
     source/util/cinifile.h \
     source/limage/charsetimage.h \
     source/limage/c64fullscreenchar.h \
-    source/limage/imageleveleditor.h
+    source/limage/imageleveleditor.h \
+    source/limage/limagecharsetregular.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
