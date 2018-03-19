@@ -5,6 +5,7 @@
 #include "source/limage/standardcolorimage.h"
 #include "source/limage/charsetimage.h"
 #include <typeinfo>
+#include "source/util/util.h"
 
 MultiColorImage::MultiColorImage(LColorList::Type t) : LImage(t)
 {
@@ -639,7 +640,18 @@ void MultiColorImage::ToQImage(LColorList& lst, QImage* img, float zoom, QPointF
             float yp = ((j-center.y())*zoom) + center.y();
 
             unsigned int col = getPixel(xp,yp);
-            QRgb rgbCol = (lst.m_list[col].color).rgb();
+            // Has transparency?
+            QColor c=QColor(0,0,0);
+            if (col>=1000) {
+                col-=1000;
+                c = QColor(255, 128, 128);
+            }
+            QColor scol = lst.m_list[col].color;
+            if (c.red()>0) {
+                if ((int)(xp) %4==0 || (int)(yp+1)%4==0)
+                    scol = c;
+            }
+            QRgb rgbCol = (scol).rgb();
             //for (int k=0;k<m_scale;k++)
  //               img->setPixel(m_scale*i + k,j,rgbCol);
                 img->setPixel(i,j,rgbCol);

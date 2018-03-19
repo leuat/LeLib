@@ -261,11 +261,13 @@ unsigned int ImageLevelEditor::getPixel(int x, int y)
     pos = v + shift;
 
 //    return m_charset->m_data[pos].get(v + (2*x)&7, v+ y&7,m_bitMask);
-    uchar val = m_charset->m_data[pos].get(ix, iy,m_charset->m_bitMask);
+    uint val = m_charset->m_data[pos].get(ix, iy,m_charset->m_bitMask);
 
-    if (val==m_charset->m_data[pos].c[3])
-        val = col;
-
+    if (val==m_charset->m_data[pos].c[3]) {
+        val = col&0b00000111;
+    }
+    if ((col&0b00001000)==0b00001000)
+            val+=1000;
 
     return val;
 
