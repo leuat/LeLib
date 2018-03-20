@@ -647,7 +647,7 @@ void MultiColorImage::ToQImage(LColorList& lst, QImage* img, float zoom, QPointF
                 c = QColor(255, 128, 128);
             }
             QColor scol = lst.m_list[col].color;
-            if (c.red()>0) {
+            if (c.red()>0 && renderPathGrid) {
                 if ((int)(xp) %4==0 || (int)(yp+1)%4==0)
                     scol = c;
             }

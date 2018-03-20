@@ -53,6 +53,8 @@ public:
     unsigned char m_noColors = 4;
     unsigned char m_minCol = 1;
 
+    bool renderPathGrid = true;
+
     unsigned char m_extraCols[4];
 
     LColorList m_colorList;

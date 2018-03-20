@@ -150,7 +150,9 @@ void ImageLevelEditor::StoreData(QTableWidget *tbl)
     for (int k=3;k<m_currentLevel->m_ExtraData.count();k++) {
         if (tbl->item(j,i)==nullptr)
                 return;
-        int val = tbl->item(j,i)->text().toInt();
+        uchar val = tbl->item(j,i)->text().toInt();
+
+
 /*        if (val!=0)
         {
             qDebug() << " data " << j << ", "<< i << "  : " << val;
@@ -306,7 +308,7 @@ void ImageLevelEditor::CopyFrom(LImage *mc)
         //SetLevel(QPoint(0,0));
         m_currentLevelPos = c->m_currentLevelPos;
         SetLevel(m_currentLevelPos);
-
+        renderPathGrid = c->renderPathGrid;
     }
     else
     LImage::CopyFrom(mc);
