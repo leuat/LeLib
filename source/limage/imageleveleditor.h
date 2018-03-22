@@ -162,6 +162,8 @@ public:
 
     bool PixelToPos(int x, int y, int& pos);
 
+    void Fix() override; // Fix data doccuption
+
 };
 
 #endif // IMAGELEVELEDITOR_H

@@ -223,6 +223,23 @@ bool ImageLevelEditor::PixelToPos(int x, int y, int& pos)
 
 }
 
+void ImageLevelEditor::Fix()
+{
+    QByteArray data = m_currentLevel->m_CharData;
+    QByteArray cols = m_currentLevel->m_ColorData;
+
+    for (int i=0;i<m_meta.m_width;i++)
+        for (int j=0;j<m_meta.m_height;j++) {
+            int x = (i-1)%m_meta.m_width;
+            int y = (j)%m_meta.m_height;
+            m_currentLevel->m_CharData[i+j*m_meta.m_width] = data[x+y*m_meta.m_width];
+            m_currentLevel->m_ColorData[i+j*m_meta.m_width] = cols[x+y*m_meta.m_width];
+
+        }
+
+
+}
+
 void ImageLevelEditor::setPixel(int x, int y, unsigned int color)
 {
     int pos;
@@ -347,6 +364,34 @@ void ImageLevelEditor::Resize(CharmapGlobalData newMeta)
         }
 
     }
+    if (newMeta.m_sizex!=m_meta.m_sizex || newMeta.m_sizey!=m_meta.m_sizey) {
+      //  qDebug() << "Resizing datachunks";
+        int osx = m_meta.m_sizex;
+        int osy = m_meta.m_sizey;
+        m_meta.m_dataChunks = newMeta.m_dataChunks;
+        m_meta.m_dataChunkSize = newMeta.m_dataChunkSize;
+        m_meta.m_sizex = newMeta.m_sizex;
+        m_meta.m_sizey = newMeta.m_sizey;
+
+        m_meta.Calculate();
+
+        QVector<CharmapLevel*> nl;
+        nl.resize(m_meta.m_sizex*m_meta.m_sizey);
+        for (int i=0;i<nl.count();i++)
+            nl[i] = nullptr;
+        for (int i=0;i<osx;i++)
+            for (int j=0;j<osy;j++)
+                nl[ i + m_meta.m_sizex*j] = m_levels[i + osx*j];
+
+
+        for (int i=0;i<nl.count();i++)
+            if (nl[i] == nullptr)
+                nl[i] = new CharmapLevel(m_meta.dataSize(), m_meta.m_extraDataSize);
+
+
+        m_levels = nl;
+    }
+
 }
 
 

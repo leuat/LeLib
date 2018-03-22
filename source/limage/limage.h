@@ -60,6 +60,8 @@ public:
     LColorList m_colorList;
 
 
+    virtual void Fix() {} // Used to fix problems. Really? Yeah. Character level corruptions etc.
+
     virtual void Initialize(int width, int height) = 0;
 
     virtual void setPixel(int x, int y, unsigned int color) = 0;
