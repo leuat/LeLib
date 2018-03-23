@@ -24,6 +24,10 @@ public:
     void Load(QString fname);
     void Save(QString fname);
 
+    void Save() {
+        Save(filename);
+    }
+
     QString getString(QString name) {
         for (int i=0;i<items.size();i++) {
             if (items[i].name==name.toLower().trimmed())

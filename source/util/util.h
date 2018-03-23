@@ -270,6 +270,15 @@ public:
 
     }
 
+
+    static QPoint mapToWindow(QWidget *from, QPoint pt){
+      QWidget *wnd = from->window();
+      while(from && from!=wnd){
+        pt = from->mapToParent(pt);
+        from = from->parentWidget();
+      }
+      return pt;
+    }
 };
 
 template <typename T>

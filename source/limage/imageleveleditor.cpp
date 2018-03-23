@@ -166,7 +166,7 @@ void ImageLevelEditor::StoreData(QTableWidget *tbl)
     }
 }
 
-void ImageLevelEditor::KeyPress(QKeyEvent *e)
+bool ImageLevelEditor::KeyPress(QKeyEvent *e)
 {
     QPoint dir(0,0);
     if (e->key()==Qt::Key_W)
@@ -179,8 +179,11 @@ void ImageLevelEditor::KeyPress(QKeyEvent *e)
         dir.setX(1);
 
 
-    if (dir.x()!=0 || dir.y()!=0)
+    if (dir.x()!=0 || dir.y()!=0) {
         SetLevel(m_currentLevelPos + dir);
+        return true;
+    }
+    return false;
 }
 
 

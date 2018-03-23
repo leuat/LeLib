@@ -10,7 +10,9 @@ public:
     LImageQImage() {}
     LImageQImage(LColorList::Type t);
     QImage* m_qImage = nullptr;
-
+    ~LImageQImage() {
+        Release();
+    }
 
     void Initialize(int width, int height) override;
 

@@ -3,6 +3,7 @@
 
 void CIniFile::Load(QString fname) {
 
+    filename = fname;
     if (!QFile::exists(fname)) {
         qDebug() << "Could not find file " << fname;
         return;

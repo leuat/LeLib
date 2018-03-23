@@ -70,7 +70,7 @@ public:
 
     virtual void LoadCharset(QString file) {}
 
-    virtual void KeyPress(QKeyEvent *e) {}
+    virtual bool KeyPress(QKeyEvent *e) {return false;}
     virtual void SaveBin(QFile &file) = 0;
     virtual void LoadBin(QFile &file) = 0;
 

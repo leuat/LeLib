@@ -145,7 +145,7 @@ public:
     void BuildData(QTableWidget* tbl, QStringList header ) override;
     void StoreData(QTableWidget* tbl ) override;
 
-    void KeyPress(QKeyEvent *e) override;
+    bool KeyPress(QKeyEvent *e) override;
 
     virtual QPoint GetCurrentPosInImage(float x, float y) {
         return QPoint(x/8,y/8);

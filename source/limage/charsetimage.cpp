@@ -86,6 +86,32 @@ void CharsetImage::ToQPixMaps(QVector<QPixmap> &map)
         QPixmap p = QPixmap::fromImage(img);
         map.append(p);
     }
+    /*
+    for (int i=0;i<63;i++) {
+
+        int j=i*4;
+        QImage img1 = m_data[i].toQImage(j, m_bitMask, m_colorList);
+        QImage img2 = m_data[i].toQImage(j+1, m_bitMask, m_colorList);
+        QImage img3 = m_data[i].toQImage(j+40, m_bitMask, m_colorList);
+        QImage img4 = m_data[i].toQImage(j+41, m_bitMask, m_colorList);
+
+        QImage img = QImage(img1.size()*2, QImage::Format_RGB32);
+        int w= img1.size().width();
+        int h= img1.size().height();
+
+        for (int i=0;i<w;i++)
+            for (int j=0;j<h;j++) {
+                img.setPixel(i,j,img1.pixel(i,j));
+                img.setPixel(i+w,j,img2.pixel(i,j));
+                img.setPixel(i,j+h,img3.pixel(i,j));
+                img.setPixel(i+w,j+h,img4.pixel(i,j));
+            }
+
+
+        QPixmap p = QPixmap::fromImage(img);
+        map.append(p);
+    }
+*/
 }
 
 void CharsetImage::setPixel(int x, int y, unsigned int color)
