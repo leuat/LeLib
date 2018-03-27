@@ -424,7 +424,7 @@ PixelChar &MultiColorImage::getPixelChar(int x, int y)
 {
     int dx = x/(8/m_scale);
     int dy = y/8;
-    return m_data[dx + 40*dy];
+    return m_data[(int)Util::clamp(dx + 40*dy,0,40*25)];
 
 }
 
@@ -565,6 +565,27 @@ QByteArray PixelChar::data()
     return qb;
 }
 
+uchar PixelChar::flipSpriteBit(int cnt)
+{
+    uchar k = p[cnt];
+    for (int i=0;i<8;i+=2) {
+        uchar mask = 0b11 <<i;
+        uchar j = (k >> i)&0b11;
+        int n=j;
+
+
+        if (j==1) n=3;
+        if (j==3) n=1;
+
+        k = (k & ~mask) | (n<<i);
+
+    }
+    return k;
+//    p[cnt] = k;
+
+
+}
+
 
 
 QString PixelChar::colorToAssembler()
@@ -584,6 +605,8 @@ QImage PixelChar::toQImage(int size, uchar bmask, LColorList& lst)
             int y = j/(float)(size)*8;
             uchar c = get(ix,y, bmask);
 
+         //   if (rand()%100==0 && c!=0)
+           //     qDebug() << lst.m_list[c].color;
             img.setPixel(i,j,lst.m_list[c].color.rgba());
         }
 

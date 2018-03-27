@@ -13,6 +13,9 @@
 #include <QLabel>
 #include <QTableWidget>
 
+
+class CharsetImage;
+
 class LImageSupports {
 public:
     bool binarySave = false;
@@ -27,7 +30,8 @@ class LImage
 {
 public:
     enum Type { QImageBitmap, MultiColorBitmap, HiresBitmap,
-                NotSupported, Tiff, CharMapMulticolor, FullScreenChar, LevelEditor, CharmapRegular};
+                NotSupported, Tiff, CharMapMulticolor, FullScreenChar, LevelEditor, CharmapRegular,
+              Sprites};
 
 
     enum WriteType { Color, Character };
@@ -42,6 +46,8 @@ public:
     static Type CharToType(unsigned char c);
 
 
+
+
     int m_width;
     int m_height;
     float m_scaleX = 0.6f;
@@ -53,11 +59,20 @@ public:
     unsigned char m_noColors = 4;
     unsigned char m_minCol = 1;
 
+    unsigned int m_currencChar;
+
+    virtual void setCurrentChar(int i) {m_currencChar = i;}
+
+    virtual CharsetImage* getCharset() { return nullptr; }
+
     bool renderPathGrid = true;
 
     unsigned char m_extraCols[4];
 
     LColorList m_colorList;
+
+    virtual void CopyChar() {}
+    virtual void PasteChar() {}
 
 
     virtual void Fix() {} // Used to fix problems. Really? Yeah. Character level corruptions etc.

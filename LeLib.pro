@@ -55,7 +55,8 @@ SOURCES += \
     source/limage/charsetimage.cpp \
     source/limage/c64fullscreenchar.cpp \
     source/limage/imageleveleditor.cpp \
-    source/limage/limagecharsetregular.cpp
+    source/limage/limagecharsetregular.cpp \
+    source/limage/limagesprites.cpp
 
 HEADERS += \
         lelib.h \
@@ -83,7 +84,8 @@ HEADERS += \
     source/limage/charsetimage.h \
     source/limage/c64fullscreenchar.h \
     source/limage/imageleveleditor.h \
-    source/limage/limagecharsetregular.h
+    source/limage/limagecharsetregular.h \
+    source/limage/limagesprites.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

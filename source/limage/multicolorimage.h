@@ -22,6 +22,7 @@ public:
     QString colorMapToAssembler(int i, int j);
     uchar colorMapToNumber(int i, int j);
     QByteArray data();
+    uchar flipSpriteBit(int i);
     QString colorToAssembler();
     QImage toQImage(int size, uchar bmask, LColorList& lst);
     bool isEmpty();

@@ -12,6 +12,9 @@ public:
     bool forceRedraw = false;
     bool redrawFileList = false;
     bool abort = false;
+    bool requestSaveAs = false;
+    bool requestCloseWindow = false;
+    bool blink = false;
     float percent = 0;
     unsigned char currentColor = 0;
     static Data data;

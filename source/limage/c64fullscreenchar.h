@@ -29,6 +29,7 @@ public:
 //    void FromRaw(QByteArray& arr);
 //    void ToRaw(QByteArray& arr);
     void BuildImage();
+    CharsetImage* getCharset() override { return m_charset; }
 
     void setPixel(int x, int y, unsigned int color) override;
     unsigned int getPixel(int x, int y) override;

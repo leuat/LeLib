@@ -124,15 +124,15 @@ void ImageLevelEditor::BuildData(QTableWidget *tbl, QStringList header)
     int chunks = m_meta.m_dataChunks;
     int size = m_meta.m_dataChunkSize;
 
-    tbl->setRowCount(chunks);
-    tbl->setColumnCount(size);
-    tbl->setHorizontalHeaderLabels(header);
-    for (int i=0;i<size;i++)
-        tbl->setColumnWidth(i,45);
-        int i=0;
+    tbl->setColumnCount(chunks);
+    tbl->setRowCount(size);
+    tbl->setVerticalHeaderLabels(header);
+    for (int i=0;i<chunks;i++)
+        tbl->setColumnWidth(i,55);
+    int i=0;
     int j=0;
     for (int k=3;k<m_currentLevel->m_ExtraData.count();k++) {
-        tbl->setItem(j,i,new QTableWidgetItem(QString::number(m_currentLevel->m_ExtraData[k])));
+        tbl->setItem(i,j,new QTableWidgetItem(QString::number(m_currentLevel->m_ExtraData[k])));
         if (++i>=size) {
             i=0;
             j++;
@@ -148,9 +148,9 @@ void ImageLevelEditor::StoreData(QTableWidget *tbl)
     int j=0;
 
     for (int k=3;k<m_currentLevel->m_ExtraData.count();k++) {
-        if (tbl->item(j,i)==nullptr)
+        if (tbl->item(i,j)==nullptr)
                 return;
-        uchar val = tbl->item(j,i)->text().toInt();
+        uchar val = tbl->item(i,j)->text().toInt();
 
 
 /*        if (val!=0)
@@ -158,7 +158,7 @@ void ImageLevelEditor::StoreData(QTableWidget *tbl)
             qDebug() << " data " << j << ", "<< i << "  : " << val;
         }*/
         m_currentLevel->m_ExtraData[k] = val;
-        if (++i>=tbl->columnCount()) {
+        if (++i>=tbl->rowCount()) {
             i=0;
             j++;
         }
@@ -250,7 +250,7 @@ void ImageLevelEditor::setPixel(int x, int y, unsigned int color)
         return; // out of bounds
 
     if (m_writeType==Character)
-        m_currentLevel->m_CharData[pos] = color;
+        m_currentLevel->m_CharData[pos] = m_currencChar;
     if (m_writeType==Color)
         m_currentLevel->m_ColorData[pos] = color;
 
@@ -307,6 +307,8 @@ void ImageLevelEditor::CopyFrom(LImage *mc)
         //d.m_sizex = 1;
         //d.m_sizey = 1;
         Initialize(c->m_meta);
+
+        m_currencChar = c->m_currencChar;
 
         for (int i=0;i<m_meta.m_sizex*m_meta.m_sizey;i++) {
             m_levels[i]->m_CharData = c->m_levels[i]->m_CharData;

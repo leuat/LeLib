@@ -28,7 +28,10 @@ void CIniFile::Load(QString fname) {
             it.strval = tok[1].toLower().trimmed();
             it.dval  = tok[1].toFloat();
             if (tok[1].split(",").count()!=1) {
+                it.strval = "";
+                it.dval = -1;
                 it.lst = tok[1].split(",");
+                it.lst.removeFirst();
                 for (QString& s : it.lst) {
                     s = s.trimmed();
                  //   qDebug() << s;
@@ -53,6 +56,17 @@ void CIniFile::Save(QString fname)
         f << i.name << " = ";
         if (i.strval!="")
            f << i.strval << "\n";
+        else
+          if (i.lst.count()!=0) {
+              f<<",";
+              for (int j=0;j<i.lst.count();j++) {
+                  f<<i.lst[j];
+                 // qDebug() << " << " << i.lst[j];
+                  if (j!=i.lst.count()-1)
+                      f<<", ";
+              }
+
+          }
         else
             f << QString::number(i.dval) << "\n";
 

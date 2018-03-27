@@ -59,7 +59,42 @@ public:
 
     }
 
+    void addStringList(QString name, QString val, bool isUnique) {
+        for (int i=0;i<items.size();i++) {
+            if (items[i].name==name.toLower().trimmed()) {
+                if (isUnique)
+                    AddUniqueString(&items[i], val);
+                else
+                    items[i].lst<<val;
+                return;
+            }
 
+        }
+        CItem i;
+        i.name = name;
+//        if (isUnique)
+  //          AddUniqueString(&items[i], val);
+
+        i.lst<<val;
+        items.append(i);
+
+    }
+
+    void removeFromList(QString name, QString val) {
+        for (int i=0;i<items.size();i++) {
+            if (items[i].name==name.toLower().trimmed()) {
+                items[i].lst.removeAll(val);
+                return;
+            }
+
+        }
+
+    }
+
+    void AddUniqueString(CItem* it,QString str) {
+        it->lst.removeAll(str);
+        it->lst.insert(0, str);
+    }
 
     bool getBool(QString name) {
         for (int i=0;i<items.size();i++) {

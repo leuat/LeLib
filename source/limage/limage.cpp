@@ -23,6 +23,10 @@ unsigned char LImage::TypeToChar(LImage::Type t)
         return 2;
     if (t==LevelEditor)
         return 3;
+    if (t==CharMapMulticolor)
+        return 4;
+    if (t==Sprites)
+        return 5;
 
 
     return 255;
@@ -38,6 +42,10 @@ LImage::Type LImage::CharToType(unsigned char c)
         return HiresBitmap;
     if (c==3)
         return LevelEditor;
+    if (c==4)
+        return CharMapMulticolor;
+    if (c==5)
+        return Sprites;
 
 
     return NotSupported;
