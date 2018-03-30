@@ -6,13 +6,15 @@
 #include <QFile>
 #include <QTextStream>
 #include <QVector>
-
+#include <QVector3D>
+#include <QColor>
 
 class CItem {
 public:
     QString name, strval;
     QStringList lst;
     double dval;
+    QVector3D vec;
 };
 
 class CIniFile  {
@@ -36,6 +38,27 @@ public:
         return "";
     }
 
+
+    QVector3D getVec(QString name) {
+        for (int i=0;i<items.size();i++) {
+            if (items[i].name==name.toLower().trimmed())
+                return items[i].vec;
+        }
+        return QVector3D(0,0,0);
+    }
+    QColor getColor(QString name) {
+        for (int i=0;i<items.size();i++) {
+            if (items[i].name==name.toLower().trimmed()) {
+                QColor c;
+                c.setRed(items[i].vec.x());
+                c.setGreen(items[i].vec.y());
+                c.setBlue(items[i].vec.z());
+                return c;
+            }
+        }
+        return QColor(0,0,0);
+    }
+
     QStringList getStringList(QString name) {
         for (int i=0;i<items.size();i++) {
             if (items[i].name==name.toLower().trimmed())
@@ -55,6 +78,37 @@ public:
         CItem i;
         i.name = name;
         i.strval  = val;
+        items.append(i);
+
+    }
+
+    void setFloat(QString name, float val) {
+        for (int i=0;i<items.size();i++) {
+            if (items[i].name==name.toLower().trimmed()) {
+                items[i].dval = val;
+                return;
+            }
+
+        }
+        CItem i;
+        i.name = name;
+        i.dval  = val;
+        items.append(i);
+
+    }
+
+
+    void setVec(QString name, QVector3D val) {
+        for (int i=0;i<items.size();i++) {
+            if (items[i].name==name.toLower().trimmed()) {
+                items[i].vec = val;
+                return;
+            }
+
+        }
+        CItem i;
+        i.name = name;
+        i.vec  = val;
         items.append(i);
 
     }
