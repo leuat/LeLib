@@ -24,7 +24,7 @@ public:
     QByteArray data();
     uchar flipSpriteBit(int i);
     QString colorToAssembler();
-    QImage toQImage(int size, uchar bmask, LColorList& lst);
+    QImage toQImage(int size, uchar bmask, LColorList& lst, int scale);
     bool isEmpty();
     bool isEqualBytes(PixelChar& o);
     void Reorganize(unsigned char bitMask, unsigned char Scale,unsigned char minCol, unsigned char maxCol);
@@ -114,8 +114,8 @@ public:
     void CopyFrom(LImage* mc) override;
 
 
-    void ExportAsm(QString filename) override;
-    void ExportRasBin(QString filename, QString name);
+  //  void ExportAsm(QString filename) override;
+    void ExportBin(QFile& file) override;
 
 };
 

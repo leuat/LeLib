@@ -11,7 +11,10 @@ LImageCharsetRegular::LImageCharsetRegular(LColorList::Type t) : CharsetImage(t)
     m_minCol = 0;
     Clear();
     m_type = LImage::Type::CharmapRegular;
+    SetColor(1,2);
+    SetColor(1,3);
     SetColor(1,1);
+    SetColor(0,0);
 
     m_supports.asmExport = false;
     m_supports.binaryLoad = true;

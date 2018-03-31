@@ -27,6 +27,8 @@ unsigned char LImage::TypeToChar(LImage::Type t)
         return 4;
     if (t==Sprites)
         return 5;
+    if (t==CharmapRegular)
+        return 6;
 
 
     return 255;
@@ -46,6 +48,8 @@ LImage::Type LImage::CharToType(unsigned char c)
         return CharMapMulticolor;
     if (c==5)
         return Sprites;
+    if (c==6)
+        return CharmapRegular;
 
 
     return NotSupported;

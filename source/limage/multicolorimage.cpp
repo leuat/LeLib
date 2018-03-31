@@ -16,10 +16,9 @@ MultiColorImage::MultiColorImage(LColorList::Type t) : LImage(t)
     m_type = LImage::Type::MultiColorBitmap;
     m_supports.asmExport = true;
     m_supports.binaryLoad = false;
-    m_supports.binarySave = false;
+    m_supports.binarySave = true;
     m_supports.flfSave = true;
     m_supports.flfLoad = true;
-    m_supports.asmExport = true;
 
 
 }
@@ -130,7 +129,7 @@ void MultiColorImage::CopyFrom(LImage* img)
 
 }
 
-void MultiColorImage::ExportAsm(QString filename)
+/*void MultiColorImage::ExportAsm(QString filename)
 {
     QString filen = filename.split(".")[0];
     ExportRasBin(filen,"");
@@ -235,9 +234,13 @@ void MultiColorImage::ExportAsm(QString filename)
     file.close();
 
 }
-
-void MultiColorImage::ExportRasBin(QString filenameBase, QString name)
+*/
+void MultiColorImage::ExportBin(QFile& ofile)
 {
+
+    QString f = ofile.fileName();
+
+    QString filenameBase = f.split(".")[0];
 
     QString fData = filenameBase + "_data.bin";
     QString fColor = filenameBase + "_color.bin";
@@ -283,10 +286,11 @@ void MultiColorImage::ExportRasBin(QString filenameBase, QString name)
 
     // Take care of color data!
 
-
-
+    ofile.close();
+    QFile::remove(ofile.fileName());
 
 }
+
 
 void MultiColorImage::Clear()
 {
@@ -595,13 +599,13 @@ QString PixelChar::colorToAssembler()
 
 }
 
-QImage PixelChar::toQImage(int size, uchar bmask, LColorList& lst)
+QImage PixelChar::toQImage(int size, uchar bmask, LColorList& lst, int scale)
 {
     QImage img= QImage(size,size,QImage::Format_RGB32);
     for (int i=0;i<size;i++)
         for (int j=0;j<size;j++) {
             int x = i/(float)(size)*8;
-            int ix = (x % (8)/2)*2;
+            int ix = (x % (8)/scale)*scale;
             int y = j/(float)(size)*8;
             uchar c = get(ix,y, bmask);
 

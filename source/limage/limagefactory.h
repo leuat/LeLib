@@ -35,6 +35,7 @@ public:
             return new LImageSprites(colorType);
 
         qDebug() << "ERROR: LImageFactory could not find type " << t;
+        qDebug() << "Charmapfactory: " << LImage::Type::CharmapRegular;
         return nullptr;
     }
 

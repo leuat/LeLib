@@ -68,6 +68,8 @@ void CharsetImage::SaveBin(QFile& file)
     file.write( ( char * )( &m_extraCols[3] ), 1 );
     file.write( ( char * )( &m_data ),  25*40*12 );
 
+    qDebug() << "SAVBING";
+
 }
 
 void CharsetImage::LoadBin(QFile& file)
@@ -94,14 +96,14 @@ unsigned int CharsetImage::getPixel(int x, int y)
     if (m_currentMode == CHARSET1x1 || m_currentMode == CHARSET2x2) {
         int i = x/320.0*bp;
         int j = y/200.0*bp;
-        int shiftx = (m_currencChar*4)%320;
+        int shiftx = (m_currencChar*8/m_scale)%320;
         int shifty = (m_currencChar/(int)40)*8;
         return MultiColorImage::getPixel(i+shiftx,j+shifty);
     }
     if (m_currentMode == CHARSET2x2_REPEAT) {
         int i = x/320.0*16*3;
         int j = y/200.0*16*3;
-        int shiftx = (m_currencChar*4)%320;
+        int shiftx = (m_currencChar*8/m_scale)%320;
         int shifty = (m_currencChar/(int)40)*8;
 
         int xx = i%8+shiftx;
@@ -144,7 +146,7 @@ void CharsetImage::ToQPixMaps(QVector<QPixmap> &map)
 {
     map.clear();
     for (int i=0;i<m_charCount;i++) {
-        QImage img = m_data[i].toQImage(64, m_bitMask, m_colorList);
+        QImage img = m_data[i].toQImage(64, m_bitMask, m_colorList, m_scale);
         QPixmap p = QPixmap::fromImage(img);
         map.append(p);
     }
@@ -196,13 +198,13 @@ void CharsetImage::setPixel(int x, int y, unsigned int color)
         bp=16;
 
     int xx,yy;
-    int shiftx = (m_currencChar*4)%320;
+    int shiftx = (m_currencChar*8/m_scale)%320;
     int shifty = (m_currencChar/(int)40)*8;
     if (m_currentMode == CHARSET1x1 || m_currentMode == CHARSET2x2) {
         int i = x/320.0*bp;
         int j = y/200.0*bp;
 
-        if (j<0 || j>=16 || i<0 || i>=8)
+        if (j<0 || j>=16 || i<0 || i>=16/m_scale)
             return;
         xx = i+shiftx;
         yy = j+shifty;
@@ -243,6 +245,15 @@ void CharsetImage::CopyFrom(LImage *img)
         m_border = mc->m_border;
         m_currentMode = mc->m_currentMode;
         m_currencChar = mc->m_currencChar;
+
+        m_width = mc->m_width;
+        m_height = mc->m_height;
+        m_scaleX = mc->m_scaleX;
+        m_bitMask = mc->m_bitMask;
+        m_noColors = mc->m_noColors;
+        m_scale = mc->m_scale;
+        m_minCol = mc->m_minCol;
+
         for (int i=0;i<4;i++)
             m_extraCols[i]  = mc->m_extraCols[i];
         // qDebug() << "COPY FROM";
