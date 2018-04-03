@@ -65,7 +65,7 @@ public:
 
     virtual CharsetImage* getCharset() { return nullptr; }
 
-    bool renderPathGrid = true;
+    bool renderPathGrid = false;
 
     unsigned char m_extraCols[4];
 

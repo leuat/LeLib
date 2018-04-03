@@ -26,7 +26,12 @@ void CIniFile::Load(QString fname) {
             it.dval = -1;
             it.name = tok[0].toLower().trimmed();
             it.strval = tok[1].toLower().trimmed();
-            it.dval  = tok[1].toFloat();
+            bool ok;
+            it.dval  = tok[1].toFloat(&ok);
+            if (ok) {
+                it.strval="";
+            }
+            else it.dval = 0;
 
             if (tok[1].split(":").count()==3) {
                 QStringList v = tok[1].split(":");
@@ -62,6 +67,7 @@ void CIniFile::Save(QString fname)
     file.open(QIODevice::WriteOnly| QIODevice::Text);
     QTextStream f(&file);
     for (CItem i: items) {
+        //  qDebug() << i.name << " " << QString::number(i.dval) << ", " << i.strval << "\n";
         f << i.name << " = ";
         if (i.strval!="")
            f << i.strval << "\n";
@@ -83,8 +89,10 @@ void CIniFile::Save(QString fname)
                   f<<QString::number(i.vec.z()) << "\n";
               }
 
-        else
+              else {
             f << QString::number(i.dval) << "\n";
+          //  qDebug() << QString::number(i.dval) << "\n";
+              }
 
     }
     file.close();

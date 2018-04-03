@@ -141,7 +141,9 @@ public:
 //    void FromRaw(QByteArray& arr);
 //    void ToRaw(QByteArray& arr);
 
-    CharsetImage* getCharset() override { return m_charset; }
+    CharsetImage* getCharset() override {
+        return m_charset;
+    }
 
     void BuildData(QTableWidget* tbl, QStringList header ) override;
     void StoreData(QTableWidget* tbl ) override;

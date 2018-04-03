@@ -23,6 +23,7 @@ public:
 
     QVector<CItem> items;
 
+    CIniFile() {}
     void Load(QString fname);
     void Save(QString fname);
 
@@ -86,6 +87,7 @@ public:
         for (int i=0;i<items.size();i++) {
             if (items[i].name==name.toLower().trimmed()) {
                 items[i].dval = val;
+                items[i].strval = "";
                 return;
             }
 
@@ -93,6 +95,7 @@ public:
         CItem i;
         i.name = name;
         i.dval  = val;
+        i.strval = "";
         items.append(i);
 
     }
