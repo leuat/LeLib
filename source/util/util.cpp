@@ -102,6 +102,30 @@ QString Util::findFileInDirectory(QString search, QString dir, QString extension
 
 }
 
+QString Util::listFiles(QDir directory, QString searchFile)
+{
+        QDir dir(directory);
+        QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+        foreach(QFileInfo finfo, list) {
+                if (finfo.isDir()) {
+                        QString s = listFiles(QDir(finfo.absoluteFilePath()), searchFile);
+                        if (s!="")
+                            return s;
+                }
+                if (finfo.fileName().toLower()==searchFile.toLower())
+                    return finfo.absoluteFilePath();
+
+        }
+        return "";
+}
+
+QString Util::findFileInSubDirectories(QString search, QString dir, QString extension)
+{
+    QDir directory(dir);
+    return listFiles(directory, search);
+
+}
+
 float Util::clamp(float val, const float mi, const float ma) {
     val = min(ma, val);
     val = max(mi, val);

@@ -299,11 +299,13 @@ void MultiColorImage::LoadCharset(QString file)
     }
 
     QFile f(file);
-
+    qDebug() << "Loading";
     f.open(QIODevice::ReadOnly);
     m_charset = new CharsetImage(m_colorList.m_type);
     m_charset->ImportBin(f);
     f.close();
+    qDebug() << "Done";
+
 }
 
 void MultiColorImage::Clear()

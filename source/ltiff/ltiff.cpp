@@ -500,7 +500,7 @@ void LTiff::SetupBuffers()
 }
 
 
-void LTiff::Transform(LTiff &oTiff, float angle, float scale, int tx, int ty, QColor background, Counter* counter)
+void LTiff::Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, QColor background, Counter* counter)
 {
     float length = m_height/(float)m_tileHeight;
     float width = m_width/(float)m_tileWidth;
@@ -529,8 +529,8 @@ void LTiff::Transform(LTiff &oTiff, float angle, float scale, int tx, int ty, QC
                     //byte c1 = oTiff.getTiledPixel
                     //                    qDebug() << "Getting at " << x+i << " , " << y+j << endl;
 
-                    float xx = (x+i - centerx)*scale;
-                    float yy = (y+j - centery)*scale;
+                    float xx = (x+i - centerx)/scale.x();
+                    float yy = (y+j - centery)/scale.y();
 
                     float xr = xx*cos(angle)-yy*sin(angle) + ocenterx + tx;
                     float yr = yy*cos(angle)+xx*sin(angle) + ocentery + ty;

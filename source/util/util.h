@@ -80,7 +80,8 @@ public:
     }
 
     static QString findFileInDirectory(QString search,QString dir, QString extension);
-
+    static QString findFileInSubDirectories(QString file, QString dir, QString extension);
+    static QString listFiles(QDir directory, QString searchFile);
     static float floatRandom(const float & min, const float & max) {
         static std::mt19937 generator;
         std::uniform_real_distribution<float> distribution(min, max);

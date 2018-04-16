@@ -165,7 +165,7 @@ public:
     void CreateFromMeta(LTiff& oTiff, short compression, float rotationAngle, QColor background, bool calculateBounds);
     void CopyAllData(LTiff& oTiff);
     void AllocateBuffers();
-    void Transform(LTiff &oTiff, float angle, float scale, int tx, int ty, QColor background, Counter* counter);
+    void Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, QColor background, Counter* counter);
     void AutoContrast(LTiff &oTiff,  Counter* counter, float std);
     QColor GetTiledRGB(int x, int y, int thread_num);
     void SetupBuffers();
