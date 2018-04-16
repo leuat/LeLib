@@ -13,7 +13,6 @@ public:
     int m_charWidth = 40;
     int m_charHeight = 25;
 
-    CharsetImage* m_charset = nullptr;
 
     PixelChar m_color;
     C64FullScreenChar(LColorList::Type t);

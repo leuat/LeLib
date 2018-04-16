@@ -127,7 +127,6 @@ public:
     CharmapLevel* getLevel(int i, int j);
     CharmapGlobalData m_meta;
 
-    CharsetImage* m_charset = nullptr;
 
     void SetLevel(QPoint f);
     ImageLevelEditor(LColorList::Type t);
@@ -159,7 +158,6 @@ public:
     unsigned int getPixel(int x, int y) override;
     void CopyFrom(LImage* mc) override;
 
-    virtual void LoadCharset(QString file) override;
 
     void Resize(CharmapGlobalData newMeta);
 

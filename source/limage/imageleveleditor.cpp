@@ -337,20 +337,6 @@ void ImageLevelEditor::CopyFrom(LImage *mc)
 
 }
 
-void ImageLevelEditor::LoadCharset(QString file)
-{
-    if (!QFile::exists(file)) {
-        qDebug() << "Could not find file " << file;
-        return;
-    }
-
-    QFile f(file);
-
-    f.open(QIODevice::ReadOnly);
-    m_charset = new CharsetImage(m_colorList.m_type);
-    m_charset->ImportBin(f);
-    f.close();
-}
 
 void ImageLevelEditor::Resize(CharmapGlobalData newMeta)
 {

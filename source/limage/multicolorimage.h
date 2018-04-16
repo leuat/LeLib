@@ -78,10 +78,12 @@ public:
     virtual void Clear() override;
 
     int LookUp(PixelChar pc);
+    CharsetImage* m_charset = nullptr;
 
     void CalculateCharIndices();
     int Eat(int start, int add);
     void SaveCharRascal(QString file, QString name);
+    void LoadCharset(QString file) override;
 
 //    unsigned char m_border=0, m_background=0;
 
