@@ -89,19 +89,41 @@ void LImageSprites::ToRaw(QByteArray &arr)
 
 QPoint LImageSprites::getXY(int x, int y)
 {
-    int bp=24;
-
     int xx,yy;
-    int shiftx = ((m_currencChar%40)*4)%320;
-    int shifty = ((int)((m_currencChar-m_currencChar%40)/(int)40))*8;
 
-    int i = x/320.0*24;
-    int j = y/200.0*21;
+    if (m_currentMode!=CHARSET2x2) {
 
-    //        if (j<0 || j>=24 || i<0 || i>=16)
-    //            return QPoint(0,0);
-    xx = i+shiftx;
-    yy = j+shifty;
+
+        int shiftx = ((m_currencChar%40)*4)%320;
+        int shifty = ((int)((m_currencChar-m_currencChar%40)/(int)40))*8;
+
+        int i = x/320.0*24;
+        int j = y/200.0*21;
+
+        //        if (j<0 || j>=24 || i<0 || i>=16)
+        //            return QPoint(0,0);
+        xx = i+shiftx;
+        yy = j+shifty;
+    }
+    if (m_currentMode==CHARSET2x2) {
+
+
+        int shiftx = ((m_currencChar%40)*4)%320;
+        int shifty = ((int)((m_currencChar-m_currencChar%40)/(int)40))*8;
+
+        int i = x/320.0*24*3;
+        int j = y/200.0*21*2;
+
+
+
+        //        if (j<0 || j>=24 || i<0 || i>=16)
+        //            return QPoint(0,0);
+        xx = i+shiftx;
+        yy = j+shifty;
+
+        if (yy>=21) yy+=3;
+
+    }
 
 
     return QPoint(xx,yy);
@@ -135,14 +157,6 @@ void LImageSprites::setPixel(int x, int y, unsigned int color)
 {
     QPoint p = getXY(x,y);
     setLimitedPixel(p.x(),p.y(), color);
-/*    PixelChar& pc = getPixelChar(p.x(),p.y());
-
-    for (int i=0;i<4;i++) {
-        if (i!=3)
-        pc.c[i] = m_extraCols[i];
-    }
-*/
-//    MultiColorImage::setPixel(xx,yy, color);
 
 }
 

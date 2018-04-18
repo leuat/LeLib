@@ -21,6 +21,9 @@ public:
 //    bool m_charMode = true; // or colorMode
 
 
+    void SaveBin(QFile &f) override;
+    void LoadBin(QFile &f) override;
+
     void SetColor(uchar col, uchar idx) override;
     void Clear() override;
     void ImportBin(QFile& f) override;

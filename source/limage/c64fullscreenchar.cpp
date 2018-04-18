@@ -95,7 +95,7 @@ void C64FullScreenChar::setPixel(int x, int y, unsigned int color)
         return;
 
     if (m_writeType==Character)
-       m_rawData[x/8+ (y/8)*m_charWidth] = color;
+       m_rawData[x/8+ (y/8)*m_charWidth] = m_currencChar;
     if (m_writeType==Color)
        m_rawColors[x/8+ (y/8)*m_charWidth] = color;
     //BuildImage();
@@ -142,8 +142,32 @@ void C64FullScreenChar::CopyFrom(LImage *mc)
         }
         m_charset = c->m_charset;
         m_writeType = c->m_writeType;
+        m_currencChar = c->m_currencChar;
+
     }
     else
     LImage::CopyFrom(mc);
 
 }
+
+
+void C64FullScreenChar::SaveBin(QFile& file)
+{
+    file.write( ( char * )( &m_background ),  1 );
+    file.write( ( char * )( &m_border ), 1 );
+    file.write( m_rawColors ,  25*40);
+    file.write( m_rawData ,  25*40);
+
+}
+
+void C64FullScreenChar::LoadBin(QFile& file)
+{
+    file.read( ( char * )( &m_background ),1 );
+    file.read( ( char * )( &m_border ), 1);
+    m_rawColors.resize(25*40);
+    m_rawData.resize(25*40);
+    m_rawColors = file.read( 25*40);
+    m_rawData = file.read( 25*40);
+
+}
+
