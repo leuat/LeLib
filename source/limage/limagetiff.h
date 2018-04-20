@@ -18,7 +18,7 @@ public:
 //    void setPixel(int x, int y, unsigned int color) override;
   //  unsigned int getPixel(int x, int y) override;
 
-    void LoadTiff(QString filename);
+    bool LoadTiff(QString filename);
 
     void ToQImage(LColorList& lst, QImage* img, float zoom, QPointF center) override;
 

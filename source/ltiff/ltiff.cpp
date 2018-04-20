@@ -163,7 +163,7 @@ bool LTiff::Open(QString filename)
     m_filename = filename;
     m_tif = TIFFOpen(filename.toStdString().c_str(), "r");
     if (!m_tif) {
-        qDebug() << "CANNOT OPEN TIFF FILE";
+        qDebug() << "CANNOT OPEN TIFF FILE : " << filename;
         return false;
     }
     TIFFGetField(m_tif, TIFFTAG_IMAGEWIDTH, &m_width);

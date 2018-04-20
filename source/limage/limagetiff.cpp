@@ -32,19 +32,20 @@ void LImageTiff::Initialize(int width, int height)
     m_qImage = new QImage(width, height, QImage::Format_ARGB32);
 }
 
-void LImageTiff::LoadTiff(QString filename)
+bool LImageTiff::LoadTiff(QString filename)
 {
 #ifdef USE_LIBTIFF
-    for (int i=0;i<omp_get_max_threads();i++)
+   // for (int i=0;i<omp_get_max_threads();i++)
     {
         LTiff* m_tif = new LTiff();
         if (!m_tif->Open(filename)) {
             //LMessage::lMessage.Error("Could not open tiff file + '"+i + "' ! Please check the filename and try again.");
             qDebug() << "Could not open tiff " << filename;
-            return;
+            return false;
         }
         m_tif->SetupBuffers();
         m_tifs.append(m_tif);
+        return true;
     }
 #else
     qDebug() << "LibTIFF not compiled in this version";
