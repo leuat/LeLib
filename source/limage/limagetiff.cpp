@@ -50,7 +50,7 @@ bool LImageTiff::LoadTiff(QString filename)
 #else
     qDebug() << "LibTIFF not compiled in this version";
 #endif
-
+    return true;
 }
 
 void LImageTiff::ToQImage(LColorList &lst, QImage *img, float zoom, QPointF center)
