@@ -31,6 +31,15 @@ public:
         Save(filename);
     }
 
+    bool contains(QString name) {
+        for (int i=0;i<items.size();i++)
+            if (items[i].name==name.toLower().trimmed())
+                return true;
+
+       return false;
+
+    }
+
     QString getString(QString name) {
         for (int i=0;i<items.size();i++) {
             if (items[i].name==name.toLower().trimmed())
@@ -136,6 +145,26 @@ public:
         items.append(i);
 
     }
+
+    void setStringList(QString name, QStringList val) {
+        for (int i=0;i<items.size();i++) {
+            if (items[i].name==name.toLower().trimmed()) {
+                items[i].lst = val;
+                return;
+            }
+
+        }
+        CItem i;
+        i.name = name;
+//        if (isUnique)
+  //          AddUniqueString(&items[i], val);
+
+        i.lst = val;
+        items.append(i);
+
+    }
+
+
 
     void removeFromList(QString name, QString val) {
         for (int i=0;i<items.size();i++) {
