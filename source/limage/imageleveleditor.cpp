@@ -95,10 +95,29 @@ void ImageLevelEditor::SaveBin(QFile &file)
 
     file.write(m_meta.toHeader());
     int i=0;
+    CharmapLevel* ll = m_levels[0];
+
+    qDebug() << "Chardata: " <<ll->m_CharData.size();
+    qDebug() << "Colordata: " <<ll->m_CharData.size();
+    qDebug() << "Extradata: " <<ll->m_ExtraData.size();
+
     for (CharmapLevel* l : m_levels) {
         file.write( l->m_CharData);
         file.write( l->m_ColorData);
         file.write( l->m_ExtraData);
+
+        if (l->m_CharData.size()!= ll->m_CharData.size()) {
+            qDebug() << "1";
+            exit(1);
+        }
+        if (l->m_ColorData.size()!= ll->m_ColorData.size()) {
+            qDebug() << "1";
+            exit(1);
+        }
+        if (l->m_ExtraData.size()!= ll->m_ExtraData.size()) {
+            qDebug() << "1";
+            exit(1);
+        }
     }
 
 }
@@ -110,7 +129,10 @@ void ImageLevelEditor::LoadBin(QFile &file)
     m_meta.Calculate();
 
     Initialize(m_meta);
+    qDebug() << "INChardata: " <<m_meta.dataSize();
+    qDebug() << "INExtraData: " <<m_meta.m_extraDataSize;
     for (CharmapLevel* l : m_levels) {
+
         l->m_CharData = file.read(m_meta.dataSize());
         l->m_ColorData = file.read(m_meta.dataSize());
         l->m_ExtraData = file.read(m_meta.m_extraDataSize);
@@ -219,7 +241,7 @@ bool ImageLevelEditor::PixelToPos(int x, int y, int& pos)
     y=y-m_meta.m_starty*0.5;
 
     pos = x + y*m_meta.m_width;
-    if (pos<0 || pos>m_meta.dataSize())
+    if (pos<0 || pos>=m_meta.dataSize())
         return false;
 
     return true;
