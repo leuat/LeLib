@@ -18,6 +18,14 @@ public:
 
     enum Mode{ FULL_IMAGE, CHARSET1x1, CHARSET2x2, CHARSET2x2_REPEAT};
 
+    QString GetCurrentModeString() override {
+        if (m_currentMode==CHARSET1x1) return "1x1 charset mode";
+        if (m_currentMode==CHARSET2x2) return "2x2 charset mode";
+        if (m_currentMode==CHARSET2x2_REPEAT) return "2x2 charset repeat mode";
+
+        return "Full image mode";
+    }
+
 
     Mode m_currentMode = FULL_IMAGE;
 
@@ -35,14 +43,15 @@ public:
     virtual void FromRaw(QByteArray& arr);
     virtual void ToRaw(QByteArray& arr);
     void ToQPixMaps(QVector<QPixmap>& map);
-    void setPixel(int x, int y, unsigned int color) override;
+    virtual void setPixel(int x, int y, unsigned int color) override;
 
     void CopyFrom(LImage* mc);
     bool KeyPress(QKeyEvent *e) override;
 
     void setLimitedPixel(int x, int y, unsigned int color);
 
-
+    void FlipHorizontal() override;
+    void FlipVertical() override;
 
     void CopyChar() override;
     void PasteChar() override;

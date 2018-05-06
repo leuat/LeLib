@@ -26,6 +26,11 @@ CharsetImage::CharsetImage(LColorList::Type t) : MultiColorImage(t)
     m_supports.flfLoad = true;
     m_supports.asmExport = false;
 
+    m_supports.displayColors = true;
+    m_supports.displayForeground = false;
+
+    m_currencChar=0;
+    m_currentMode=Mode::CHARSET2x2;
 
 }
 
@@ -35,6 +40,7 @@ void CharsetImage::SetColor(uchar col, uchar idx)
 
     if (idx==0)
         m_background = col;
+
     for (int i=0;i<40*25;i++)
         m_data[i].c[idx] = col;
 
@@ -116,6 +122,41 @@ unsigned int CharsetImage::getPixel(int x, int y)
 }
 
 
+void CharsetImage::FlipVertical()
+{
+    uint tmp[24*24];
+    if (m_currentMode==CHARSET2x2) {
+        float i = 160/16.0;
+        float j = 200.0/16.0;
+
+        for (int x=0;x<16;x++)
+            for (int y=0;y<16;y++) {
+                tmp[16*y + x]=getPixel(x*i,y*j+1);
+            }
+        for (int y=0;y<16;y++)
+            for (int x=0;x<16;x++)
+            setPixel( x*i ,y*j+1, tmp[16*y + 15-x]);
+
+    }
+}
+
+void CharsetImage::FlipHorizontal()
+{
+    uint tmp[24*24];
+    if (m_currentMode==CHARSET2x2) {
+        float i = 160/16.0;
+        float j = 200.0/16.0;
+
+        for (int x=0;x<16;x++)
+            for (int y=0;y<16;y++) {
+                tmp[16*y + x]=getPixel(x*i,y*j+1);
+            }
+        for (int y=0;y<16;y++)
+            for (int x=0;x<16;x++)
+                setPixel( x*i ,y*j+1, tmp[16*(15-y) +x]);
+
+    }
+}
 
 
 void CharsetImage::FromRaw(QByteArray &arr)
@@ -312,6 +353,8 @@ void CharsetImage::setLimitedPixel(int x, int y, unsigned int color)
 
     //if (ix==0 || ix == 2 || ix == 4 || ix == 6)
     pc.set(m_scale*ix, iy, color, m_bitMask);
+
+//    qDebug() << color;
 
 }
 

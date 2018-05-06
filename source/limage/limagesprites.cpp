@@ -167,6 +167,48 @@ unsigned int LImageSprites::getPixel(int x, int y)
 
 }
 
+void LImageSprites::FlipVertical()
+{
+    if (m_currentMode==CHARSET2x2)
+        return;
+
+
+    uint tmp[24*24];
+    float i = 160/24.0;
+    float j = 200.0/21.0;
+
+    for (int x=0;x<24;x++)
+        for (int y=0;y<21;y++) {
+            tmp[24*y + x]=getPixel(x*i,y*j+8);
+        }
+    for (int y=0;y<21;y++)
+      for (int x=0;x<23;x++)
+            setPixel( x*i+8 ,y*j+8, tmp[24*y + 23-x]);
+
+
+}
+
+void LImageSprites::FlipHorizontal()
+{
+    if (m_currentMode==CHARSET2x2)
+        return;
+
+
+    uint tmp[24*24];
+    float i = 160/24.0;
+    float j = 200.0/21.0;
+
+    for (int x=0;x<24;x++)
+        for (int y=0;y<21;y++) {
+            tmp[24*y + x]=getPixel(x*i,y*j);
+        }
+    for (int y=0;y<21;y++)
+      for (int x=0;x<24;x++)
+            setPixel( x*i ,y*j+8, tmp[24*(20-y) +x]);
+
+
+}
+
 void LImageSprites::CopyChar()
 {
     m_copy[0] = m_data[m_currencChar];

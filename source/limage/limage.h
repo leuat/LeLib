@@ -23,6 +23,13 @@ public:
     bool flfSave = false;
     bool flfLoad = false;
     bool asmExport = false;
+
+    bool displayColors = true;
+    bool displayBackground = true;
+    bool displayForeground = true;
+    bool displayMC1 = true;
+    bool displayMC2 = true;
+
 };
 
 
@@ -61,6 +68,10 @@ public:
 
     unsigned int m_currencChar;
 
+
+
+
+
     virtual void setCurrentChar(int i) {m_currencChar = i;}
 
     virtual CharsetImage* getCharset() { return nullptr; }
@@ -74,10 +85,16 @@ public:
     virtual void CopyChar() {}
     virtual void PasteChar() {}
 
+    virtual void FlipHorizontal() {}
+    virtual void FlipVertical() {}
 
     virtual void Fix() {} // Used to fix problems. Really? Yeah. Character level corruptions etc.
 
     virtual void Initialize(int width, int height) = 0;
+
+    virtual QString GetCurrentModeString() {
+        return "Full image mode";
+    }
 
     virtual void setPixel(int x, int y, unsigned int color) = 0;
     virtual unsigned int getPixel(int x, int y) = 0;

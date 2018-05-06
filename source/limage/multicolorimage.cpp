@@ -504,6 +504,9 @@ void PixelChar::set(int x, int y, unsigned char color, unsigned char bitMask, un
 
     }
 
+
+/*    if (rand()%100>20)
+        qDebug() << winner;*/
     // Clear
     unsigned int f = ~(bitMask << x);
     p[y] &= f;
@@ -522,8 +525,11 @@ void PixelChar::set(int x, int y, unsigned char color, unsigned char bitMask)
     // find index
     uchar index = 10;
     if (c[0]==color) index=0;
+    else
     if (c[1]==color) index=1;
+    else
     if (c[2]==color) index=2;
+    else
     if (index==10) {
         index=3;
         c[index] = color;
@@ -620,7 +626,7 @@ QImage PixelChar::toQImage(int size, uchar bmask, LColorList& lst, int scale)
     QImage img= QImage(size,size,QImage::Format_RGB32);
     for (int i=0;i<size;i++)
         for (int j=0;j<size;j++) {
-            int x = i/(float)(size)*8;
+            int x = i/(float)(size-8)*8;
             int ix = (x % (8)/scale)*scale;
             int y = j/(float)(size)*8;
             uchar c = get(ix,y, bmask);

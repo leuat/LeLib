@@ -6,7 +6,7 @@ LImageCharsetRegular::LImageCharsetRegular(LColorList::Type t) : CharsetImage(t)
     m_height = 200;
     m_scaleX = 1.0f;
     m_bitMask = 0b1;
-    m_noColors = 2;
+    m_noColors = 1;
     m_scale = 1;
     m_minCol = 0;
     Clear();
@@ -23,5 +23,27 @@ LImageCharsetRegular::LImageCharsetRegular(LColorList::Type t) : CharsetImage(t)
     m_supports.flfLoad = true;
     m_supports.asmExport = false;
 
+    m_supports.displayColors = true;
+    m_supports.displayMC1 = true;
+    m_supports.displayForeground = false;
+    m_supports.displayMC2 = false;
 
+
+    m_currencChar=0;
+    m_currentMode=Mode::CHARSET1x1;
 }
+
+
+void LImageCharsetRegular::setPixel(int x, int y, unsigned int color)
+{
+    if (!(color==m_extraCols[0] || color==m_extraCols[1])) {
+        color = m_extraCols[1];
+        //qDebug() << color;
+    }
+    CharsetImage::setPixel(x,y,color);
+}
+
+/*void LImageCharsetRegular::SetColor(uchar col, uchar idx)
+{
+}
+*/
