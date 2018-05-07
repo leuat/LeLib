@@ -35,7 +35,9 @@ void LImageTiff::Initialize(int width, int height)
 bool LImageTiff::LoadTiff(QString filename)
 {
 #ifdef USE_LIBTIFF
-   // for (int i=0;i<omp_get_max_threads();i++)
+
+    int num = omp_get_max_threads();
+    for (int i=0;i<num;i++)
     {
         LTiff* m_tif = new LTiff();
         if (!m_tif->Open(filename)) {
@@ -45,8 +47,9 @@ bool LImageTiff::LoadTiff(QString filename)
         }
         m_tif->SetupBuffers();
         m_tifs.append(m_tif);
-        return true;
+        qDebug() << "Appending.. ";
     }
+    return true;
 #else
     qDebug() << "LibTIFF not compiled in this version";
 #endif
@@ -60,17 +63,21 @@ void LImageTiff::ToQImage(LColorList &lst, QImage *img, float zoom, QPointF cent
 
 //    m_tif.SetupBuffers();
   //  m_tif.UpdateBuffers();
+
+
     for (int i=0;i<omp_get_max_threads();i++)
         m_tifs[i]->bufferStack.SetDefault();
 
+
     float addPercent = 1.0/(m_width*m_height);
     Data::data.percent = 0;
-#pragma omp parallel for
+    #pragma omp parallel for
     for (int i=0;i<m_width;i++) {
         for (int j=0;j<m_height;j++) {
 
             int thread = omp_get_thread_num();
             LTiff* m_tif = m_tifs[thread];
+
             float xx = i/(float)m_width*m_tif->m_width;
             float yy = j/(float)m_height*m_tif->m_height;
 
