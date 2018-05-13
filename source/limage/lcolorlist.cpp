@@ -244,6 +244,7 @@ void LColorList::CreateUI(QLayout* ly, int type)
 void LColorList::handleButtonEdit(int data)
 {
     Data::data.currentColor = data;
+    Data::data.currentIsColor=true;
 
 }
 

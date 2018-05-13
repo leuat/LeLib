@@ -271,6 +271,8 @@ void ImageLevelEditor::setPixel(int x, int y, unsigned int color)
     if (!PixelToPos(x,y, pos))
         return; // out of bounds
 
+//    qDebug() << (m_writeType==Color);
+
     if (m_writeType==Character)
         m_currentLevel->m_CharData[pos] = m_currencChar;
     if (m_writeType==Color)

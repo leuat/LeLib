@@ -53,7 +53,7 @@ public:
     static Type CharToType(unsigned char c);
 
 
-
+    QMap<QString, float> m_exportParams;
 
     int m_width;
     int m_height;
@@ -81,6 +81,8 @@ public:
     unsigned char m_extraCols[4];
 
     LColorList m_colorList;
+
+    virtual void RenderEffect(QMap<QString, float> params) {}
 
     virtual void CopyChar() {}
     virtual void PasteChar() {}

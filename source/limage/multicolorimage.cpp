@@ -678,6 +678,7 @@ int PixelChar::Count(unsigned int col, unsigned char bitMask, unsigned char scal
     return cnt;
 }
 
+
 void MultiColorImage::ToQImage(LColorList& lst, QImage* img, float zoom, QPointF center)
 {
 //    return;
@@ -706,4 +707,25 @@ void MultiColorImage::ToQImage(LColorList& lst, QImage* img, float zoom, QPointF
                 img->setPixel(i,j,rgbCol);
         }
     //return img;
+}
+
+void MultiColorImage::RenderEffect(QMap<QString, float> params)
+{
+    float density = params["density"];
+
+    QVector3D center(0.5, 0.5,0);
+    for (int x=0;x<160;x++)
+        for (int y=0;y<200;y++) {
+            QVector3D p(x/160.0, y/200.0,0);
+            p=p-center;
+            //float angle = atan2(y,x);
+            float angle = atan2(p.y(),p.x());
+
+
+            float l = p.length();
+            int as = (int)(abs(angle*params["angleStretch"]));
+            int k = ((int)(l*density + as))%(int)params["noColors"];
+            setPixel(x,y,k);
+        }
+
 }

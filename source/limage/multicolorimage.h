@@ -29,6 +29,7 @@ public:
     bool isEqualBytes(PixelChar& o);
     void Reorganize(unsigned char bitMask, unsigned char Scale,unsigned char minCol, unsigned char maxCol);
     int Count(unsigned int col, unsigned char bitMask, unsigned char Scale);
+
     static unsigned char reverse(unsigned char b) {
        b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
        b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
@@ -103,6 +104,7 @@ public:
     void ToQImage(LColorList& lst, QImage* img, float zoom, QPointF center) override;
 
     void Release() override {}
+    virtual void RenderEffect(QMap<QString, float> params);
 
     void ApplyToLabel(QLabel* l) override {}
 

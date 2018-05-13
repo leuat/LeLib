@@ -32,6 +32,10 @@ CharsetImage::CharsetImage(LColorList::Type t) : MultiColorImage(t)
     m_currencChar=0;
     m_currentMode=Mode::CHARSET2x2;
 
+
+    m_exportParams["Start"] = 0;
+    m_exportParams["End"] = 256;
+
 }
 
 void CharsetImage::SetColor(uchar col, uchar idx)
@@ -174,12 +178,16 @@ void CharsetImage::FromRaw(QByteArray &arr)
 
 void CharsetImage::ToRaw(QByteArray &arr)
 {
-    arr.resize(256*8);
-    for (int i=0;i<256;i++) {
+    int start = m_exportParams["Start"];
+    int end = m_exportParams["End"];
+    int size = start-end;
+    qDebug() << start << " " << end;
+
+    arr.resize(size*8);
+    for (int i=start;i<end;i++) {
         PixelChar& pc = m_data[i];
-        int idx=i*8;
         for (int j=0;j<8;j++)
-            arr[i*8+j] = PixelChar::reverse(pc.p[j]);
+            arr[(i-start)*8+j] = PixelChar::reverse(pc.p[j]);
     }
 }
 
@@ -269,6 +277,12 @@ void CharsetImage::setPixel(int x, int y, unsigned int color)
     setLimitedPixel(xx,yy,color);
 //    MultiColorImage::setPixel(xx,yy, color);
 
+
+
+}
+
+void CharsetImage::RenderEffect(QMap<QString, float> params)
+{
 
 
 }

@@ -45,6 +45,9 @@ public:
     void ToQPixMaps(QVector<QPixmap>& map);
     virtual void setPixel(int x, int y, unsigned int color) override;
 
+
+    void RenderEffect(QMap<QString, float> params) override;
+
     void CopyFrom(LImage* mc);
     bool KeyPress(QKeyEvent *e) override;
 

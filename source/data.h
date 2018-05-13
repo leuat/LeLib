@@ -17,6 +17,7 @@ public:
     bool blink = false;
     float percent = 0;
     unsigned char currentColor = 0;
+    bool currentIsColor = false;
     static Data data;
     void Redraw();
 };

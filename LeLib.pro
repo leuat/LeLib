@@ -56,7 +56,8 @@ SOURCES += \
     source/limage/c64fullscreenchar.cpp \
     source/limage/imageleveleditor.cpp \
     source/limage/limagecharsetregular.cpp \
-    source/limage/limagesprites.cpp
+    source/limage/limagesprites.cpp \
+    source/limage/limageeffects.cpp
 
 HEADERS += \
         lelib.h \
@@ -85,14 +86,15 @@ HEADERS += \
     source/limage/c64fullscreenchar.h \
     source/limage/imageleveleditor.h \
     source/limage/limagecharsetregular.h \
-    source/limage/limagesprites.h
+    source/limage/limagesprites.h \
+    source/limage/limageeffects.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
 
-CONFIG+=USE_LIBTIFF
-DEFINES += USE_LIBTIFF
+#CONFIG+=USE_LIBTIFF
+#DEFINES += USE_LIBTIFF
 
 USE_LIBTIFF {
 unix|win32: LIBS += -L$$PWD/lib/ -llibtiff
