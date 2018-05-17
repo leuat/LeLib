@@ -10,7 +10,7 @@ TARGET = LeLib
 TEMPLATE = lib
 CONFIG += staticlib
 
-#QMAKE_CXXFLAGS += -openmp
+QMAKE_CXXFLAGS += -std=c++11
 
 win32-g++ {
   QMAKE_CXXFLAGS += -fopenmp
