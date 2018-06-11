@@ -67,13 +67,15 @@ void C64FullScreenChar::ExportBin(QFile &f)
 {
  //   ToRaw(m_rawData);
     f.write(m_rawData);
-    for (int i=0;i<m_rawColors.count();i++)
+/*    for (int i=0;i<m_rawColors.count();i++)
         m_rawColors[i] = m_rawColors[i] + 8;
 
     f.write(m_rawColors);
 
     for (int i=0;i<m_rawColors.count();i++)
-        m_rawColors[i] = m_rawColors[i] - 8;
+        m_rawColors[i] = m_rawColors[i] - 8;*/
+
+
 }
 
 void C64FullScreenChar::BuildImage()
@@ -157,6 +159,7 @@ void C64FullScreenChar::SaveBin(QFile& file)
     file.write( ( char * )( &m_border ), 1 );
     file.write( m_rawColors ,  25*40);
     file.write( m_rawData ,  25*40);
+
 
 }
 

@@ -95,6 +95,8 @@ QString Util::findFileInDirectory(QString search, QString dir, QString extension
     QDirIterator it(dir, QStringList() << "*." + extension, QDir::Files);
     while (it.hasNext()) {
         QString f = it.next();
+        if (search=="")
+            return f;
         if (f.contains(search))
             return f;
     }

@@ -42,7 +42,7 @@ void LImageEffects::RenderCircles(LImageEffect *le)
             QVector3D p(x/width, y/height,0);
             p=p-center;
             //float angle = atan2(y,x);
-            float angle = atan2(p.y(),p.x())+3.14159*2;
+            float angle = atan2(p.y(),p.x());//+3.14159*2;
 
 
             float l = pow(p.length(), le->m_params["lpow"]);
