@@ -260,9 +260,6 @@ QString LTiff::ClipToCurrentBorders(short compression, QColor background, Counte
 {
     QStringList split = m_filename.split('.');
 
-
-
-
     LTiff otif;
     QString filename = split[0] + "_clip" + "." + split[1];
     otif.New(filename);
@@ -270,15 +267,20 @@ QString LTiff::ClipToCurrentBorders(short compression, QColor background, Counte
     otif.m_boundsMin = m_boundsMin;
     otif.CreateFromMeta(*this, compression, 0, background, false);
 
-/*    qDebug() << "new bounds (in): " << m_boundsMin << ", " << m_boundsMax;
+
+
+    qDebug() << "new bounds (in): " << m_boundsMin << ", " << m_boundsMax;
     qDebug() << "new bounds (out): " << otif.m_boundsMin << ", " << otif.m_boundsMax;
 
 
     qDebug() << "new width (in): " << m_width << ", " << m_height;
     qDebug() << "new width (out): " << otif.m_width << ", " << otif.m_height;
-*/
+
+    qDebug() << "Calling setupBuffers: " << m_filename;
     SetupBuffers();
+    qDebug() << "Calling oTiff: setupBuffers: " << m_filename;
     otif.SetupBuffers();
+    qDebug() << "Calling allocateBuffers " << m_filename;
     otif.AllocateBuffers();
 
     *counter = Counter((int)(otif.m_width*otif.m_height/otif.m_tileHeight/otif.m_tileWidth),"Clipping tiff ", false);
@@ -301,6 +303,7 @@ QString LTiff::ClipToCurrentBorders(short compression, QColor background, Counte
 
 
                }
+            
             otif.WriteBuffer(x,y,0);
            // counter.Tick();
             bufferStack.UpdateBuffer();
@@ -523,8 +526,8 @@ void LTiff::Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, 
 
             //oTiff.ReadBuffer(x,y);
 
-            for (int i = 0;i<m_tileWidth;i++)
-                for (int j=0;j<m_tileHeight;j++) {
+            for (int i = 0;i<m_tileWidth/10;i++)
+                for (int j=0;j<m_tileHeight/10;j++) {
 
                     //byte c1 = oTiff.getTiledPixel
                     //                    qDebug() << "Getting at " << x+i << " , " << y+j << endl;
