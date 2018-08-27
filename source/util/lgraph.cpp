@@ -6,6 +6,44 @@
 #include <QFile>
 #include <QTextStream>
 
+void LGraph::SignalFind(int &tx0, int &tx1, float lower, float middle) {
+    tx0=-1;
+    float lower_x0 = lower;
+    float top_x = -1;
+    tx1=-1;
+    float prevY=m_value[0];
+
+//    qDebug() << "Finding singal with tresholds:" << lower << ", " << middle;
+
+    for (int i=0;i<m_noBins;i++) {
+        float x=m_index[i];
+        float y=m_value[i];
+        if (tx0==-1) {
+            if (y>lower_x0)
+                tx0=x;
+        }
+        if (y>lower_x0 && top_x==-1 && y>middle) {
+            if (y<prevY) {
+                top_x=x;
+               // tx1=top_x;
+            }
+        }
+        // Find the next up or down
+//        qDebug() << top_x << " : " << tx1;
+        if (top_x!=-1 && tx1==-1) {
+            if (y>prevY)
+                tx1=m_index[i-1];
+            if (y<lower_x0)
+                tx1=m_index[i-1];
+//            qDebug() << "       TOP X: " << tx1;
+        }
+        prevY=y;
+    }
+    if (tx1==-1)
+        tx1=m_index[m_noBins-1];
+
+}
+
 void LGraph::RenderGauss(float mean, float std)
 {
     for (int i=0;i<m_noBins;i++) {

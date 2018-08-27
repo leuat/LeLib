@@ -27,7 +27,7 @@ void LTiff::GetMinMax(int count, QColor &minCol, QColor &maxCol, LGraph& hist)
     float minVal = 1E30;
     float maxVal = 0;
 
-    hist.Initialize(50,0,420);
+    hist.Initialize(40,0,255);
     int cnt = 0;
 //   for (int i=0;i<count;i++) { { {
     for (int y = 0; y < m_height; y += m_tileHeight) {
@@ -46,7 +46,9 @@ void LTiff::GetMinMax(int count, QColor &minCol, QColor &maxCol, LGraph& hist)
 
                 hist.m_avg=hist.m_avg+ 1/3.0 * (color.red()+color.green()+color.blue());
                 float len = Util::ColorLength(color) / sqrt(3);
-                if (len>1 && len<220)
+  //              if (len>255)
+//                qDebug() << len;
+                if (len>1 && len<255)
                 {
                 hist.add(len,1);
 /*                if (rand()%1000==0) {
@@ -76,7 +78,7 @@ void LTiff::GetMinMax(int count, QColor &minCol, QColor &maxCol, LGraph& hist)
 
 }
 
-void LTiff::AutoContrast(LTiff &oTiff, Counter *counter, float std)
+void LTiff::AutoContrast(LTiff &oTiff, Counter *counter, float lowerT, float middleT, float forceStartAtZero, QString path)
 {
     float length = m_height/(float)m_tileHeight;
     float width = m_width/(float)m_tileWidth;
@@ -89,24 +91,43 @@ void LTiff::AutoContrast(LTiff &oTiff, Counter *counter, float std)
     hist.Normalize();
 
     QString f = oTiff.m_filename.split("\\").last().split(".")[0];
-    hist.SaveText("histogram"+f+".plt");
+//    qDebug() << "File: " << f;
+    hist.SaveText(path+"/histogram"+f+".plt");
 
     hist.Mean();
     hist.Std();
 
 
-    std = 2*hist.FitGaussStd(hist.m_meanY,2, 150, 200);
+    float std = 2*hist.FitGaussStd(hist.m_meanY,2, 150, 200);
+    float mean = hist.m_meanY;
 
 
-    gauss.CopyFrom(hist);
-    gauss.RenderGauss(hist.m_meanY, std);
-    gauss.SaveText("gauss_"+f+".plt");
+    // Try another thing:
 
-    qDebug() << "meanY :" << hist.m_meanY;
-    qDebug() << "std :" << std;
+
+    int x0, x1;
+  //  qDebug() << "LOWER MIDDLE: " << lowerT << "," << middleT;
+    hist.SignalFind(x0,x1, lowerT, middleT);
+    if (forceStartAtZero==1) x0=0;
+    //gauss.CopyFrom(hist);
+  //  gauss.RenderGauss(mean, std);
+    //gauss.SaveText("gauss_"+f+".plt");
+
+//    qDebug() << "x0: " << x0;
+  //  qDebug() << "x1: " << x1;
+
+    mean = (x1+x0)/2;
+    std = (x1-x0);
+
+
+    //qDebug() << "meanY :" << mean;
+    //qDebug() << "std :" << std;
+
+
+
+
 //    std = hist.m_std;
 
-    float mean = hist.m_meanY;
 //    std = hist.m_stdY;
 
     for (uint y = 0; y < m_height; y += m_tileHeight) {
@@ -521,13 +542,14 @@ void LTiff::Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, 
     m_boundsMax = QVector3D(0,0,0);
     m_boundsMin = QVector3D(m_width, m_height,0 );
     float t = 10;
+    float scaleDebug = 1;
     for (int y = 0; y < m_height; y += m_tileHeight) {
         for (int x = 0; x < m_width; x += m_tileWidth) {
 
             //oTiff.ReadBuffer(x,y);
 
-            for (int i = 0;i<m_tileWidth/10;i++)
-                for (int j=0;j<m_tileHeight/10;j++) {
+            for (int i = 0;i<m_tileWidth/scaleDebug;i++)
+                for (int j=0;j<m_tileHeight/scaleDebug;j++) {
 
                     //byte c1 = oTiff.getTiledPixel
                     //                    qDebug() << "Getting at " << x+i << " , " << y+j << endl;

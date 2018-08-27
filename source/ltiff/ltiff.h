@@ -166,7 +166,7 @@ public:
     void CopyAllData(LTiff& oTiff);
     void AllocateBuffers();
     void Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, QColor background, Counter* counter);
-    void AutoContrast(LTiff &oTiff,  Counter* counter, float std);
+    void AutoContrast(LTiff &oTiff,  Counter* counter, float lowerT, float middleT, float forceStartAtZero, QString path);
     QColor GetTiledRGB(int x, int y, int thread_num);
     void SetupBuffers();
     void PrintImageInfo();
