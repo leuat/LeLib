@@ -44,6 +44,37 @@ void LGraph::SignalFind(int &tx0, int &tx1, float lower, float middle) {
 
 }
 
+void LGraph::SignalFind2(int &tx0, int &tx1, float lower, float middle) {
+    tx0=0;
+    qDebug() << "Middle: " << middle;
+//    qDebug() << "Finding singal with tresholds:" << lower << ", " << middle;
+    float prevY = 0;
+    int top1 = 0;
+    for (int i=m_noBins-1;i>0;i--) {
+        float x=m_index[i];
+        float y=m_value[i];
+        qDebug() << x << ", " <<y;
+
+        if (top1==0) {
+            if (y<prevY && y>middle) {
+                top1=1;
+                qDebug() << "Top 1 at " << x;
+             }
+        }
+        else {
+            if (y>prevY) {
+                tx1=x;
+                qDebug() << "Stop at " << x;
+                return;
+            }
+        }
+        prevY=y;
+    }
+/*    if (tx1==-1)
+        tx1=m_index[m_noBins-1];
+*/
+}
+
 void LGraph::RenderGauss(float mean, float std)
 {
     for (int i=0;i<m_noBins;i++) {

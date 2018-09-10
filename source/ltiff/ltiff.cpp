@@ -98,8 +98,8 @@ void LTiff::AutoContrast(LTiff &oTiff, Counter *counter, float lowerT, float mid
     hist.Std();
 
 
-    float std = 2*hist.FitGaussStd(hist.m_meanY,2, 150, 200);
-    float mean = hist.m_meanY;
+//    float std = 2*hist.FitGaussStd(hist.m_meanY,2, 150, 200);
+  //  float mean = hist.m_meanY;
 
 
     // Try another thing:
@@ -107,22 +107,22 @@ void LTiff::AutoContrast(LTiff &oTiff, Counter *counter, float lowerT, float mid
 
     int x0, x1;
   //  qDebug() << "LOWER MIDDLE: " << lowerT << "," << middleT;
-    hist.SignalFind(x0,x1, lowerT, middleT);
+    hist.SignalFind2(x0,x1, lowerT, middleT);
     if (forceStartAtZero==1) x0=0;
     //gauss.CopyFrom(hist);
   //  gauss.RenderGauss(mean, std);
     //gauss.SaveText("gauss_"+f+".plt");
 
-//    qDebug() << "x0: " << x0;
-  //  qDebug() << "x1: " << x1;
+    qDebug() << "x0: " << x0;
+    qDebug() << "x1: " << x1;
 
-    mean = (x1+x0)/2;
-    std = (x1-x0);
+    /*mean = (x1+x0)/2;
+    std = (x1-x0)/2;
 
 
-    //qDebug() << "meanY :" << mean;
-    //qDebug() << "std :" << std;
-
+    qDebug() << "meanY :" << mean;
+    qDebug() << "std :" << std;
+*/
 
 
 
@@ -141,7 +141,8 @@ void LTiff::AutoContrast(LTiff &oTiff, Counter *counter, float lowerT, float mid
 
                     QColor color =  oTiff.GetTiledRGB(xx,yy,omp_get_thread_num());
 
-                    color = Util::colorScale(color, mean, std);
+//                    color = Util::colorScale(color, mean, std);
+                    color = Util::colorScale2(color, x0, x1);
 
                     ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 2] = color.red();
                     ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 1] = color.green();

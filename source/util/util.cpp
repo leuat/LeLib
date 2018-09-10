@@ -90,6 +90,21 @@ QColor Util::colorScale(QColor &col, int mean, int std)
 
 }
 
+QColor Util::colorScale2(QColor &col, int x0, int x1)
+{
+    float f = 1.0/((x1-x0))*255;
+    QVector3D c;
+
+
+
+    c.setX((col.red()-x0)*f);
+    c.setY((col.green()-x0)*f);
+    c.setZ((col.blue()-x0)*f);
+    c = clamp(c,0,255);
+    return QColor(c.x(), c.y(), c.z());
+
+}
+
 QString Util::findFileInDirectory(QString search, QString dir, QString extension)
 {
     QDirIterator it(dir, QStringList() << "*." + extension, QDir::Files);

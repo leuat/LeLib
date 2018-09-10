@@ -34,6 +34,7 @@ public:
 
 
     void SignalFind(int& tx0, int &tx1, float lower, float middle);
+    void SignalFind2(int& tx0, int &tx1, float lower, float middle);
 
     void RenderGauss(float mean, float std);
 
