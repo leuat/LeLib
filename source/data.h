@@ -1,6 +1,7 @@
 #ifndef DATA_H
 #define DATA_H
 
+#include <QString>
 
 class Data
 {
@@ -15,6 +16,7 @@ public:
     bool requestSaveAs = false;
     bool requestCloseWindow = false;
     bool blink = false;
+    QString m_currentPath="";
     float percent = 0;
     unsigned char currentColor = 0;
     bool currentIsColor = false;

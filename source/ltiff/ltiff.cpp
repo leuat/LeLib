@@ -291,6 +291,8 @@ QString LTiff::ClipToCurrentBorders(short compression, QColor background, Counte
 
 
 
+
+
     qDebug() << "new bounds (in): " << m_boundsMin << ", " << m_boundsMax;
     qDebug() << "new bounds (out): " << otif.m_boundsMin << ", " << otif.m_boundsMax;
 
@@ -542,7 +544,7 @@ void LTiff::Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, 
 
     m_boundsMax = QVector3D(0,0,0);
     m_boundsMin = QVector3D(m_width, m_height,0 );
-    float t = 10;
+    float t = 3;
     float scaleDebug = 1;
     for (int y = 0; y < m_height; y += m_tileHeight) {
         for (int x = 0; x < m_width; x += m_tileWidth) {
@@ -578,10 +580,17 @@ void LTiff::Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, 
 
                     }
                     else {
-                        m_boundsMax.setX(max(m_boundsMax.x(), xx + centerx));
-                        m_boundsMax.setY(max(m_boundsMax.y(), yy + centery));
-                        m_boundsMin.setX(min(m_boundsMin.x(), xx + centerx));
-                        m_boundsMin.setY(min(m_boundsMin.y(), yy + centery));
+                           //dy =  yy + centery
+                        float dx = x+i;//(xx + centerx)*scale.x();
+                        float dy = y+j;//(xx + centerx)*scale.x();
+
+/*                        if (scale.x()<0) {
+                            m_width-(xx + centerx);
+                        }*/
+                        m_boundsMax.setX(max(m_boundsMax.x(), dx));
+                        m_boundsMin.setX(min(m_boundsMin.x(), dx));
+                        m_boundsMax.setY(max(m_boundsMax.y(), dy));
+                        m_boundsMin.setY(min(m_boundsMin.y(), dy));
                     }
 
                     ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 2] = color.red();
