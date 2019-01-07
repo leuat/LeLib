@@ -2,6 +2,7 @@
 #define DATA_H
 
 #include <QString>
+#include "source/util/cinifile.h"
 
 class Data
 {
@@ -16,6 +17,7 @@ public:
     bool requestSaveAs = false;
     bool requestCloseWindow = false;
     bool blink = false;
+    CIniFile* m_settings = nullptr;
     QString m_currentPath="";
     float percent = 0;
     unsigned char currentColor = 0;

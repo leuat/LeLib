@@ -5,7 +5,6 @@
 #include <QtNetwork>
 #include <QtCore>
 
-
 class TextProgressBar
 {
 public:

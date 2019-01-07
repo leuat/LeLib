@@ -1,8 +1,6 @@
 #include "source/util/downloadmanager.h"
 
 
-
-
 #include <QTextStream>
 
 #include <cstdio>
@@ -76,6 +74,7 @@ void DownloadManager::startNextDownload()
 
     QNetworkRequest request(url);
     currentDownload = manager.get(request);
+
     connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
             SLOT(downloadProgress(qint64,qint64)));
     connect(currentDownload, SIGNAL(finished()),
@@ -163,6 +162,7 @@ void DownloadManager::reportRedirect()
     QTextStream(stderr) << "Redirected to: " << redirectUrl.toDisplayString()
                         << '\n';
 }
+
 
 #include <QByteArray>
 

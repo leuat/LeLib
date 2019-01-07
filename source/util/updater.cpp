@@ -22,11 +22,13 @@ void Updater::Initialize()
     DownloadManager dm;
     dm.append(versionUrl);
     dm.saveFileName(versionUrl);
-    //dm.st
 
+    //dm.st
     QObject::connect(&dm, SIGNAL(finished()), &app, SLOT(quit()));
     app.exec();
 }
+
+
 
 void Updater::FetchNewVersion()
 {
