@@ -55,12 +55,20 @@ public:
     static string toString(double d, string param);
     static string toString(double d);
     static string toString(int d);
+
+
+    static bool QVector3DIsClose(QColor a, QColor b, QVector3D spread);
+
+            static bool QVector3DIsClose(QVector3D a, QVector3D b, QVector3D spread);
+
     static bool CancelSignal;
     static const char* read_textfile(string filename);
     static void verify_file(string filename);
     static bool verify_file_bool(string filename);
     static string trim(string s);
     static QString path;
+
+    static QVector3D vecFromString(QString s);
 
     static QColor colorScale(QColor& col, int mean, int std);
     static QColor colorScale2(QColor& col, int x0, int x1);
@@ -81,6 +89,8 @@ public:
     }
 
     static QString findFileInDirectory(QString search,QString dir, QString extension);
+    static QString findFileInDirectory(QStringList search,QString dir, QString extension);
+
     static QString findFileInSubDirectories(QString file, QString dir, QString extension);
     static QString listFiles(QDir directory, QString searchFile);
     static float floatRandom(const float & min, const float & max) {

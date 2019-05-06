@@ -18,6 +18,13 @@ LTiff::~LTiff()
     Close();
 }
 
+void LTiff::SetCompression(QString type)
+{
+    for (int i=0;i<m_compressionTypes->length();i++)
+        if (type.toLower()==m_compressionTypes[i].toLower())
+            m_compression=i;
+}
+
 void LTiff::GetMinMax(int count, QColor &minCol, QColor &maxCol, LGraph& hist)
 {
     //*counter = Counter((int)(length*width),"GetMinMax ", false);
@@ -215,6 +222,57 @@ void LTiff::New(QString filename)
 
 }
 
+void LTiff::FromQIMage(QString filename, QImage &img, QString comp, int tileSize, Counter& counter)
+{
+    New(filename);
+    SetCompression(comp);
+    m_width = img.width();
+    m_height = img.height();
+    m_tileWidth = tileSize;
+    m_tileHeight = tileSize;
+    m_samplesPerPixel = 3;
+    m_bitsPerSample = 8;
+    m_photo = 2;
+    m_config =1;
+
+    qDebug() << "From QImage: " << filename;
+
+    ApplyParameters();
+    SetupBuffers();
+    AllocateBuffers();
+    counter.Init(m_tileWidth*m_tileHeight);
+    for (int y = 0; y < m_height; y += m_tileHeight) {
+        for (int x = 0; x < m_width; x += m_tileWidth) {
+
+            //oTiff.ReadBuffer(x,y);
+
+            for (int i = 0;i<m_tileWidth;i++)
+                for (int j=0;j<m_tileHeight;j++) {
+                    float xx = (x+i);
+                    float yy = (y+j);
+                    if (xx<m_width && yy<m_height) {
+                        QColor color = img.pixel(xx,yy);
+
+                        ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 2] = color.red();
+                        ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 1] = color.green();
+                        ((unsigned char *)m_writeBuf)[3*(i + j*m_tileWidth) + 0] = color.blue();
+
+                    }
+               }
+
+            WriteBuffer(x,y,0);
+            counter.Tick();
+            bufferStack.UpdateBuffer();
+
+        }
+    }
+
+    Close();
+
+
+
+}
+
 void LTiff::WriteBuffer(int x, int y, int thread_num)
 {
     TIFFWriteTile(m_tif, m_writeBuf, x, y, 0,0);
@@ -239,6 +297,8 @@ void LTiff::PrintImageInfo()
     qDebug() << "  Samples per pixel:"<< m_samplesPerPixel;
     qDebug() << "  Bits per pixel:" << m_bitsPerSample;
     qDebug() << "  photometric: " << m_photo;
+    qDebug() << "  planar: " << m_config;
+
     if (m_compression>=0 && m_compression<11)
         qDebug() << "  Compression:" << m_compressionTypes[m_compression];
     else qDebug() << "UKNOWN COMPRESSION TYPE : "<< m_compression;
@@ -352,7 +412,9 @@ void LTiff::ReleaseBuffers()
     }*/
     m_buf.clear();
     if (m_writeBuf!=nullptr)
-        delete m_writeBuf;
+        _TIFFfree(m_writeBuf);
+
+        //        delete m_writeBuf;
 
     m_writeBuf = nullptr;
 
@@ -522,12 +584,12 @@ QColor LTiff::GetTiledRGB(int x, int y, int thread_num) {
 void LTiff::SetupBuffers()
 {
     AllocateBuffers();
-    bufferStack.Init(400, TIFFTileSize(m_tif));
+    bufferStack.Init(32, TIFFTileSize(m_tif));
 
 }
 
 
-void LTiff::Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, QColor background, Counter* counter)
+void LTiff::Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, QColor background, int colorSpread,Counter* counter)
 {
     float length = m_height/(float)m_tileHeight;
     float width = m_width/(float)m_tileWidth;
@@ -544,7 +606,7 @@ void LTiff::Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, 
 
     m_boundsMax = QVector3D(0,0,0);
     m_boundsMin = QVector3D(m_width, m_height,0 );
-    float t = 3;
+    float t = 2 + colorSpread;
     float scaleDebug = 1;
     for (int y = 0; y < m_height; y += m_tileHeight) {
         for (int x = 0; x < m_width; x += m_tileWidth) {

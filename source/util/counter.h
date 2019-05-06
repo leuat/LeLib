@@ -21,6 +21,12 @@ public:
     QElapsedTimer ttimer;
 public:
     float percent;
+    QString getPercent() {
+        return QString::number((int)percent)+"%";
+    }
+    QString getPercentFormatted() {
+        return "<font size=\"+1\">[<b>"+getPercent() +"</b>]</font>";
+    }
     Counter() {}
     Counter(int m, string s, bool output) {
         outputClams = output;

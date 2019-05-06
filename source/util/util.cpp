@@ -119,6 +119,25 @@ QString Util::findFileInDirectory(QString search, QString dir, QString extension
 
 }
 
+QString Util::findFileInDirectory(QStringList search, QString dir, QString extension)
+{
+    QDirIterator it(dir, QStringList() << "*." + extension, QDir::Files);
+    while (it.hasNext()) {
+        QString f = it.next().toLower();
+        if (search.count()==0)
+            return f;
+
+        bool found = true;
+        for (auto s: search)
+            if (!f.contains(s.toLower()))
+                found = false;
+        if (found)
+            return f;
+    }
+    return "";
+
+}
+
 QString Util::listFiles(QDir directory, QString searchFile)
 {
         QDir dir(directory);
@@ -203,3 +222,29 @@ float Util::smoothstep(float edge0, float edge1, float x)
     return x*x*(3 - 2 * x);
 }
 
+
+bool Util::QVector3DIsClose(QVector3D a, QVector3D b, QVector3D spread)
+{
+
+    QVector3D c = b-a;
+    if (abs(c.x())>spread.x())
+        return false;
+    if (abs(c.y())>spread.y())
+        return false;
+    if (abs(c.z())>spread.z())
+        return false;
+    return true;
+}
+
+bool Util::QVector3DIsClose(QColor a, QColor b, QVector3D spread)
+{
+    return Util::QVector3DIsClose( QVector3D(a.red(), a.green(), a.blue()),
+                                        QVector3D(b.red(), b.green(), b.blue()), spread );
+
+}
+
+QVector3D Util::vecFromString(QString s)
+{
+    QStringList sl = s.split(";");
+    return QVector3D(sl[0].toFloat(), sl[1].toFloat(),sl[2].toFloat());
+}

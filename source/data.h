@@ -13,6 +13,7 @@ public:
     bool redrawInput=false;
     bool forceRedraw = false;
     bool redrawFileList = false;
+    QString m_globalMessage = "";
     bool abort = false;
     bool requestSaveAs = false;
     bool requestCloseWindow = false;

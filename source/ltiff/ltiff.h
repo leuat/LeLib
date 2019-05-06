@@ -52,12 +52,13 @@ public:
 
 
     void Release() {
-
+//        qDebug() << "Releasing: " << buffers.count();
         for (int i=0;i<buffers.count();i++ ) {
             _TIFFfree(buffers[i]->m_buf);
             delete buffers[i];
         }
         buffers.clear();
+        stack.clear();
 
     }
 
@@ -72,6 +73,7 @@ public:
 
     void Init(int count, uint32 size) {
         Release();
+//        qDebug() << "Initializing buffer count:" << count;
         for (int i=0;i<count;i++) {
             tdata_t buf = _TIFFmalloc(size);
             buffers.append(new LTiffBuffer(buf, -1, -1));
@@ -155,17 +157,20 @@ public:
     LTiff();
     ~LTiff();
 
+
+    void SetCompression(QString type);
     void GetMinMax(int count, QColor& min, QColor & max, LGraph& histogram);
     void Analyzer();
     bool Open(QString filename);
     void New(QString filename);
+    void FromQIMage(QString filename, QImage& img, QString comp, int tileSize, Counter& counter);
     void WriteBuffer(int x, int y, int thread_num);
     void ReadBuffer(int x, int y, int thread_num);
     void ApplyParameters();
     void CreateFromMeta(LTiff& oTiff, short compression, float rotationAngle, QColor background, bool calculateBounds);
     void CopyAllData(LTiff& oTiff);
     void AllocateBuffers();
-    void Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, QColor background, Counter* counter);
+    void Transform(LTiff &oTiff, float angle, QPointF scale, int tx, int ty, QColor background, int colorSpread, Counter* counter);
     void AutoContrast(LTiff &oTiff,  Counter* counter, float lowerT, float middleT, float forceStartAtZero, QString path);
     QColor GetTiledRGB(int x, int y, int thread_num);
     void SetupBuffers();
