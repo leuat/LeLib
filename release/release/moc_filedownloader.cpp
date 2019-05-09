@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'filedownloader.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.12.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.10.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'filedownloader.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.12.0. It"
+#error "This file was generated using the moc from 5.10.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -47,7 +47,7 @@ QT_MOC_LITERAL(5, 57, 6) // "pReply"
 static const uint qt_meta_data_FileDownloader[] = {
 
  // content:
-       8,       // revision
+       7,       // revision
        0,       // classname
        0,    0, // classinfo
        2,   14, // methods
@@ -96,7 +96,7 @@ void FileDownloader::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            using _t = void (FileDownloader::*)();
+            typedef void (FileDownloader::*_t)();
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&FileDownloader::downloaded)) {
                 *result = 0;
                 return;
@@ -105,14 +105,10 @@ void FileDownloader::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
     }
 }
 
-QT_INIT_METAOBJECT const QMetaObject FileDownloader::staticMetaObject = { {
-    &QObject::staticMetaObject,
-    qt_meta_stringdata_FileDownloader.data,
-    qt_meta_data_FileDownloader,
-    qt_static_metacall,
-    nullptr,
-    nullptr
-} };
+QT_INIT_METAOBJECT const QMetaObject FileDownloader::staticMetaObject = {
+    { &QObject::staticMetaObject, qt_meta_stringdata_FileDownloader.data,
+      qt_meta_data_FileDownloader,  qt_static_metacall, nullptr, nullptr}
+};
 
 
 const QMetaObject *FileDownloader::metaObject() const
