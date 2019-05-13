@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'downloadmanager.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.10.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.12.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'downloadmanager.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.10.1. It"
+#error "This file was generated using the moc from 5.12.0. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -52,7 +52,7 @@ QT_MOC_LITERAL(8, 103, 17) // "downloadReadyRead"
 static const uint qt_meta_data_DownloadManager[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
        5,   14, // methods
@@ -99,7 +99,7 @@ void DownloadManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            typedef void (DownloadManager::*_t)();
+            using _t = void (DownloadManager::*)();
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&DownloadManager::finished)) {
                 *result = 0;
                 return;
@@ -108,10 +108,14 @@ void DownloadManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
     }
 }
 
-QT_INIT_METAOBJECT const QMetaObject DownloadManager::staticMetaObject = {
-    { &QObject::staticMetaObject, qt_meta_stringdata_DownloadManager.data,
-      qt_meta_data_DownloadManager,  qt_static_metacall, nullptr, nullptr}
-};
+QT_INIT_METAOBJECT const QMetaObject DownloadManager::staticMetaObject = { {
+    &QObject::staticMetaObject,
+    qt_meta_stringdata_DownloadManager.data,
+    qt_meta_data_DownloadManager,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *DownloadManager::metaObject() const

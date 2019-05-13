@@ -12,6 +12,8 @@ CONFIG += staticlib
 
 QMAKE_CXXFLAGS += -std=c++11
 
+DEFINES += IS_BETA
+
 win32-g++ {
   QMAKE_CXXFLAGS += -fopenmp
   LIBS += -fopenmp
