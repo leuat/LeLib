@@ -112,7 +112,9 @@ QString Util::findFileInDirectory(QString search, QString dir, QString extension
         QString f = it.next();
         if (search=="")
             return f;
-        if (f.contains(search))
+        QString stripped  = f.split("/").last().toLower();
+
+        if (stripped.toLower().contains(search.toLower()))
             return f;
     }
     return "";
@@ -127,9 +129,11 @@ QString Util::findFileInDirectory(QStringList search, QString dir, QString exten
         if (search.count()==0)
             return f;
 
+
+        QString stripped  = f.split("/").last().toLower();
         bool found = true;
         for (auto s: search)
-            if (!f.contains(s.toLower()))
+            if (!stripped.contains(s.toLower()))
                 found = false;
         if (found)
             return f;
