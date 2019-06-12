@@ -10,6 +10,7 @@
 #include <QPixmap>
 #include <QLayout>
 #include "source/data.h"
+#include "math.h"
 
 class Metric {
 public:
