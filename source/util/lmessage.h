@@ -19,6 +19,18 @@ public:
 
     static LMessage lMessage;
 
+    bool isChanged = false;
+
+    bool changed() {
+        if (isChanged) {
+          isChanged = false;
+          return true;
+        }
+        return false;
+
+    }
+
+
     LMessage(int max);
     LMessage();
     void Maintain();

@@ -18,6 +18,7 @@ void LMessage::Maintain()
 {
     if (m_messages.length()>m_max)
         m_messages.removeFirst();
+    isChanged = true;
 }
 
 void LMessage::Message(QString s)
