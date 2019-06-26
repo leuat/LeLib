@@ -105,6 +105,38 @@ QColor Util::colorScale2(QColor &col, int x0, int x1)
 
 }
 
+QString Util::RemoveFinalFiletype(QString input)
+{
+    QStringList ls = input.split(".");
+    QString res = "";
+    for (int i=0;i<ls.count()-1;i++)
+        res+=ls[i]+".";
+    res.remove(res.length()-1,1);
+    return res;
+}
+
+void Util::CreateDirectory(QString path)
+{
+    QDir dir(path);
+    if (!dir.exists())
+        dir.mkpath(".");
+}
+
+QString Util::getBaseFilename(QString fn)
+{
+    if (!fn.contains("."))
+        return fn;
+    QStringList s = fn.split(".");
+    s.removeLast();
+    QString file ="";
+    for (QString str : s)
+        file += str +".";
+
+    file = file.remove(file.count()-1,1);
+    return file;
+
+}
+
 QString Util::findFileInDirectory(QString search, QString dir, QString extension)
 {
     QDirIterator it(dir, QStringList() << "*." + extension, QDir::Files);

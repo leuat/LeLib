@@ -13,9 +13,7 @@ void Updater::Initialize()
     QCoreApplication app(a, nullptr);
 
     if (QFile::exists(m_versionFile)) {
-        qDebug() << "Removing old version file..";
         QFile::remove(m_versionFile);
-
     }
 
     QUrl versionUrl(m_versionURL);
@@ -36,7 +34,7 @@ void Updater::FetchNewVersion()
     QCoreApplication app(a, nullptr);
 
     if (QFile::exists(m_appFile)) {
-        qDebug() << "Removing old downloaded version..";
+//        qDebug() << "Removing old downloaded version..";
         QFile::remove(m_appFile);
 
     }

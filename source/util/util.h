@@ -73,6 +73,12 @@ public:
     static QColor colorScale(QColor& col, int mean, int std);
     static QColor colorScale2(QColor& col, int x0, int x1);
 
+    static QString RemoveFinalFiletype(QString input);
+
+    static void CreateDirectory(QString dir);
+
+    static QString getBaseFilename(QString fn);
+
     static QString fixFolder(QString folderName) {
         if (folderName[folderName.count()-1]=='\\')
                 return folderName;
