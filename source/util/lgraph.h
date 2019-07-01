@@ -112,7 +112,7 @@ public:
 
         float winner = 0;
         float winnerChi = 1E30;
-        qDebug() << "Steps: " << steps;
+//        qDebug() << "Steps: " << steps;
         for (int i=0;i<steps;i++) {
             gauss.RenderGauss(mean, cur);
             float chi = ChiSq(gauss);

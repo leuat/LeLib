@@ -11,10 +11,10 @@ void Updater::Initialize()
 {
     int a = 1;
     QCoreApplication app(a, nullptr);
-
     if (QFile::exists(m_versionFile)) {
         QFile::remove(m_versionFile);
     }
+
 
     QUrl versionUrl(m_versionURL);
     DownloadManager dm;
@@ -61,6 +61,11 @@ bool Updater::CheckVersionOK(float currentVersion)
     QString line = in.readLine();
     m_newVersion = line.toFloat();
     file.close();
+
+    if (QFile::exists(m_versionFile)) {
+        QFile::remove(m_versionFile);
+    }
+
 
     if (m_newVersion == currentVersion)
         return true;
