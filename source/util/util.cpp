@@ -179,12 +179,14 @@ QString Util::listFiles(QDir directory, QString searchFile)
         QDir dir(directory);
         QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
         foreach(QFileInfo finfo, list) {
+              //  qDebug() << finfo.fileName();
                 if (finfo.isDir()) {
                         QString s = listFiles(QDir(finfo.absoluteFilePath()), searchFile);
                         if (s!="")
                             return s;
                 }
-                if (finfo.fileName().toLower()==searchFile.toLower())
+//                if (finfo.fileName().toLower()==searchFile.toLower())
+                    if (finfo.fileName().toLower().contains(searchFile.toLower()))
                     return finfo.absoluteFilePath();
 
         }
