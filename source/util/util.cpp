@@ -1,5 +1,6 @@
 #include "util.h"
 #include <QDebug>
+#include <QProcess>
 //#include <QtGlobal>
 
 QString Util::path = "";
@@ -137,7 +138,58 @@ QString Util::getBaseFilename(QString fn)
 
 }
 
-QString Util::findFileInDirectory(QString search, QString dir, QString extension)
+float Util::getAmountOfInstalledMemory()
+{
+#ifdef _WIN32
+    MEMORYSTATUSEX memory_status;
+    ZeroMemory(&memory_status, sizeof(MEMORYSTATUSEX));
+    memory_status.dwLength = sizeof(MEMORYSTATUSEX);
+    if (GlobalMemoryStatusEx(&memory_status)) {
+      system_info.append(
+            QString("RAM: %1 MB")
+            .arg(memory_status.ullTotalPhys / (1024 * 1024)));
+    } else {
+      system_info.append("Unknown RAM");
+    }
+#elif __linux__
+//    Linux (/proc/meminfo)
+
+    QProcess p;
+    p.start("awk", QStringList() << "/MemTotal/ { print $2 }" << "/proc/meminfo");
+    p.waitForFinished();
+    QString memory = p.readAllStandardOutput();
+    return memory.toLong() / 1024.0/1024.0;
+#elif __APPLE__
+    Mac (sysctl)
+
+    QProcess p;
+    p.start("sysctl", QStringList() << "kern.version" << "hw.physmem");
+    p.waitForFinished();
+    QString system_info = p.readAllStandardOutput();
+    p.close();
+#endif
+}
+
+bool Util::VerifyImageFileSize(QString file, int avgDimension)
+{
+    QImageReader reader(file);
+    if (reader.size().width()>avgDimension || reader.size().height()>avgDimension){
+        return false;
+    }
+    return true;
+
+}
+
+float Util::getImageFileSizeInGB(QString file)
+{
+    QImageReader reader(file);
+//    qDebug()<< "WIDTH " << reader.size().width();
+    return reader.size().width()*reader.size().height()*3/1024/1024.0/1024.0;
+
+
+}
+
+QString Util::findFileInDirectory(QString search, QString dir, QString extension,QString exclusion)
 {
     QDirIterator it(dir, QStringList() << "*." + extension, QDir::Files);
     while (it.hasNext()) {
@@ -145,6 +197,9 @@ QString Util::findFileInDirectory(QString search, QString dir, QString extension
         if (search=="")
             return f;
         QString stripped  = f.split("/").last().toLower();
+        if (exclusion!="")
+            if (stripped.toLower().contains(exclusion.toLower()))
+                continue;
 
         if (stripped.toLower().contains(search.toLower()))
             return f;
@@ -153,16 +208,20 @@ QString Util::findFileInDirectory(QString search, QString dir, QString extension
 
 }
 
-QString Util::findFileInDirectory(QStringList search, QString dir, QString extension)
+QString Util::findFileInDirectory(QStringList search, QString dir, QString extension,QString exclusion)
 {
     QDirIterator it(dir, QStringList() << "*." + extension, QDir::Files);
     while (it.hasNext()) {
-        QString f = it.next().toLower();
+        QString f = it.next();
         if (search.count()==0)
             return f;
 
 
         QString stripped  = f.split("/").last().toLower();
+        if (exclusion!="")
+        if (stripped.toLower().contains(exclusion.toLower()))
+            continue;
+
         bool found = true;
         for (auto s: search)
             if (!stripped.contains(s.toLower()))

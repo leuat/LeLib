@@ -21,7 +21,7 @@
 #include <QLayout>
 #include <QLayoutItem>
 #include <QWidget>
-
+#include <QImageReader>
 //#include "random.h"
 
 #define Q_TIMER_START()  \
@@ -87,6 +87,9 @@ public:
         return folderName + "/";
     }
 
+
+    static float getAmountOfInstalledMemory();
+
     static std::string c2x(int x, int y) {
         std::string s;
         s = char('A' + y);
@@ -94,8 +97,12 @@ public:
         return s;
     }
 
-    static QString findFileInDirectory(QString search,QString dir, QString extension);
-    static QString findFileInDirectory(QStringList search,QString dir, QString extension);
+
+    static bool VerifyImageFileSize(QString file, int avgDimension);
+    static float getImageFileSizeInGB(QString file);
+
+    static QString findFileInDirectory(QString search,QString dir, QString extension, QString exclusion);
+    static QString findFileInDirectory(QStringList search,QString dir, QString extension, QString exclusion);
 
     static QString findFileInSubDirectories(QString file, QString dir, QString extension);
     static QString listFiles(QDir directory, QString searchFile);
