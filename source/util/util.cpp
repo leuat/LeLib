@@ -138,6 +138,30 @@ QString Util::getBaseFilename(QString fn)
 
 }
 
+float Util::getFreeRam()
+{
+#ifdef _WIN32
+    MEMORYSTATUSEX memory_status;
+    ZeroMemory(&memory_status, sizeof(MEMORYSTATUSEX));
+    memory_status.dwLength = sizeof(MEMORYSTATUSEX);
+    if (GlobalMemoryStatusEx(&memory_status)) {
+      system_info.append(
+            QString("RAM: %1 MB")
+            .arg(memory_status.ullTotalPhys / (1024 * 1024)));
+    } else {
+      system_info.append("Unknown RAM");
+    }
+#endif
+
+    QProcess p;
+    p.start("awk", QStringList() << "/MemFree/ { print $2 }" << "/proc/meminfo");
+    p.waitForFinished();
+    QString memory = p.readAllStandardOutput();
+    return memory.toLong() / 1024.0/1024.0;
+    p.close();
+
+}
+
 float Util::getAmountOfInstalledMemory()
 {
 #ifdef _WIN32
@@ -170,6 +194,7 @@ float Util::getAmountOfInstalledMemory()
 #endif
 }
 
+
 bool Util::VerifyImageFileSize(QString file, int avgDimension)
 {
     QImageReader reader(file);
@@ -182,9 +207,10 @@ bool Util::VerifyImageFileSize(QString file, int avgDimension)
 
 float Util::getImageFileSizeInGB(QString file)
 {
+
     QImageReader reader(file);
 //    qDebug()<< "WIDTH " << reader.size().width();
-    return reader.size().width()*reader.size().height()*3/1024/1024.0/1024.0;
+    return reader.size().width()*reader.size().height()*4/1024/1024.0/1024.0;
 
 
 }

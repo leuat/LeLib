@@ -88,6 +88,9 @@ public:
     }
 
 
+    static float getFreeRam();
+
+
     static float getAmountOfInstalledMemory();
 
     static std::string c2x(int x, int y) {
