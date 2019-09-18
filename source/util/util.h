@@ -75,7 +75,8 @@ public:
 
     static QString RemoveFinalFiletype(QString input);
 
-    static void CreateDirectory(QString dir);
+    static void CreateDir(QString path);
+
 
     static QString getBaseFilename(QString fn);
 

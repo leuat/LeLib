@@ -1,6 +1,12 @@
 #include "util.h"
 #include <QDebug>
 #include <QProcess>
+
+
+#ifdef _WIN32
+//#include <sysinfoapi.h>
+#include <windows.h>
+#endif
 //#include <QtGlobal>
 
 QString Util::path = "";
@@ -116,11 +122,11 @@ QString Util::RemoveFinalFiletype(QString input)
     return res;
 }
 
-void Util::CreateDirectory(QString path)
+void Util::CreateDir(QString path)
 {
-    QDir dir(path);
-    if (!dir.exists())
-        dir.mkpath(".");
+    QDir dirr(path);
+    if (!dirr.exists())
+        dirr.mkpath(".");
 }
 
 QString Util::getBaseFilename(QString fn)
@@ -145,13 +151,13 @@ float Util::getFreeRam()
     ZeroMemory(&memory_status, sizeof(MEMORYSTATUSEX));
     memory_status.dwLength = sizeof(MEMORYSTATUSEX);
     if (GlobalMemoryStatusEx(&memory_status)) {
-      system_info.append(
-            QString("RAM: %1 MB")
-            .arg(memory_status.ullTotalPhys / (1024 * 1024)));
+        return memory_status.ullTotalPhys / (1024 * 1024);
     } else {
-      system_info.append("Unknown RAM");
+        return 0;
     }
 #endif
+
+#ifdef __linux__
 
     QProcess p;
     p.start("awk", QStringList() << "/MemFree/ { print $2 }" << "/proc/meminfo");
@@ -160,6 +166,7 @@ float Util::getFreeRam()
     return memory.toLong() / 1024.0/1024.0;
     p.close();
 
+#endif
 }
 
 float Util::getAmountOfInstalledMemory()
@@ -169,11 +176,9 @@ float Util::getAmountOfInstalledMemory()
     ZeroMemory(&memory_status, sizeof(MEMORYSTATUSEX));
     memory_status.dwLength = sizeof(MEMORYSTATUSEX);
     if (GlobalMemoryStatusEx(&memory_status)) {
-      system_info.append(
-            QString("RAM: %1 MB")
-            .arg(memory_status.ullTotalPhys / (1024 * 1024)));
+        return memory_status.ullTotalPhys / (1024 * 1024);
     } else {
-      system_info.append("Unknown RAM");
+      return 0;
     }
 #elif __linux__
 //    Linux (/proc/meminfo)
