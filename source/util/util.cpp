@@ -283,6 +283,25 @@ QString Util::listFiles(QDir directory, QString searchFile)
         return "";
 }
 
+
+
+void Util::findFilesInSubDirectories(QStringList* lst, QString directory, QString extension)
+{
+    QDir dir(directory);
+    QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+    foreach(QFileInfo finfo, list) {
+            if (finfo.isDir())
+                findFilesInSubDirectories(lst, finfo.absoluteFilePath(), extension);
+            else
+                if (finfo.fileName().toLower().endsWith(extension))
+                    lst->append(finfo.fileName());
+
+
+    }
+
+}
+
+
 QString Util::findFileInSubDirectories(QString search, QString dir, QString extension)
 {
     QDir directory(dir);

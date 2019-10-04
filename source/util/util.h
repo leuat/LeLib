@@ -107,6 +107,7 @@ public:
 
     static QString findFileInDirectory(QString search,QString dir, QString extension, QString exclusion);
     static QString findFileInDirectory(QStringList search,QString dir, QString extension, QString exclusion);
+    static void findFilesInSubDirectories(QStringList* lst, QString dir, QString extension);
 
     static QString findFileInSubDirectories(QString file, QString dir, QString extension);
     static QString listFiles(QDir directory, QString searchFile);

@@ -352,7 +352,7 @@ QString LTiff::ClipToCurrentBorders(short compression, QColor background, Counte
 
 
 
-
+/*
     qDebug() << "new bounds (in): " << m_boundsMin << ", " << m_boundsMax;
     qDebug() << "new bounds (out): " << otif.m_boundsMin << ", " << otif.m_boundsMax;
 
@@ -360,11 +360,11 @@ QString LTiff::ClipToCurrentBorders(short compression, QColor background, Counte
     qDebug() << "new width (in): " << m_width << ", " << m_height;
     qDebug() << "new width (out): " << otif.m_width << ", " << otif.m_height;
 
-    qDebug() << "Calling setupBuffers: " << m_filename;
+    qDebug() << "Calling setupBuffers: " << m_filename;*/
     SetupBuffers();
-    qDebug() << "Calling oTiff: setupBuffers: " << m_filename;
+//    qDebug() << "Calling oTiff: setupBuffers: " << m_filename;
     otif.SetupBuffers();
-    qDebug() << "Calling allocateBuffers " << m_filename;
+  //  qDebug() << "Calling allocateBuffers " << m_filename;
     otif.AllocateBuffers();
 
     *counter = Counter((int)(otif.m_width*otif.m_height/otif.m_tileHeight/otif.m_tileWidth),"Clipping tiff ", false);
@@ -376,10 +376,12 @@ QString LTiff::ClipToCurrentBorders(short compression, QColor background, Counte
 
             for (int i = 0;i<otif.m_tileWidth;i++)
                 for (int j=0;j<otif.m_tileHeight;j++) {
-                    float xx = (x+i);
-                    float yy = (y+j);
-
-                    QColor color = GetTiledRGB(xx + m_boundsMin.x(),yy+ m_boundsMin.y(),omp_get_thread_num());
+                    float xx = (x+i) + m_boundsMin.x();
+                    float yy = (y+j)+ m_boundsMin.y();
+                    QColor color = QColor(0,0,0,255);
+                    if (xx>=0 && xx<otif.m_width)
+                        if (yy>=0 && yy<otif.m_height)
+                            color = GetTiledRGB(xx,yy,omp_get_thread_num());
 
                     ((unsigned char *)otif.m_writeBuf)[3*(i + j*otif.m_tileWidth) + 2] = color.red();
                     ((unsigned char *)otif.m_writeBuf)[3*(i + j*otif.m_tileWidth) + 1] = color.green();
