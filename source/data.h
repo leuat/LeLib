@@ -24,6 +24,7 @@ public:
     unsigned char currentColor = 0;
     bool currentIsColor = false;
     static Data data;
+    bool isConsole = false;
     void Redraw();
 };
 
